@@ -1,0 +1,32 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Composer
+src/vendor/
+
+# Docker
+docker/mysql/db/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+
+# Build files
+dist/
+build/
+
+# Logs
+*.log
