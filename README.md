@@ -40,49 +40,18 @@ docker compose up -d
 docker compose down
 ```
 
+### 新規登録がうまくいかない（テーブルが作成されない場合）
+【macの場合】
+```bash
+rm -rf docker/mysql/db
+docker compose down
+docker compose up -d
+```
+【windowsの場合】
+```bash
+docker-compose down -v
+Remove-Item -Recurse -Force docker/mysql/db
+docker-compose up -d --build
+```
 ---
-
-## サンプルサイト
-
-### ■ トップページ
-
-https://posse-ap.github.io/sample-ph1-website/
-
-```
-【参照ソースコード】
-/index.html
-/assets/styles/common.css
-```
-
-### ■ クイズページ
-
-https://posse-ap.github.io/sample-ph1-website/quiz/
-
-```
-【参照ソースコード】
-/quiz/index.html
-/assets/styles/common.css
-/assets/scripts/quiz.js
-```
-
-#### JavaScript で問題文をループ出力
-
-https://posse-ap.github.io/sample-ph1-website/quiz2/
-
-```
-【参照ソースコード】
-/quiz2/index.html
-/assets/styles/common.css
-/assets/scripts/quiz2.js
-```
-
-#### JavaScript で問題をランダムに並び替えて出力
-
-https://posse-ap.github.io/sample-ph1-website/quiz3/
-
-```
-【参照ソースコード】
-/quiz3/index.html
-/assets/styles/common.css
-/assets/scripts/quiz3.js
 ```
