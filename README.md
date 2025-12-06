@@ -19,7 +19,7 @@ cd 2025winterHackathonB
 2. Node.js の依存関係をインストール
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 
 3. Docker コンテナを起動
