@@ -95,6 +95,9 @@
                                 </button>
                             </div>
                             <textarea class="w-full h-80 bg-white border-2 border-black border-dashed rounded p-4 outline-none text-base resize-none focus:bg-yellow-100 transition-colors leading-relaxed" placeholder="ここをクリックして計画を入力してください...&#13;&#10;例：&#13;&#10;・来週までにプロトタイプ完成&#13;&#10;・DB設計の見直し"></textarea>
+                            <button class="w-full mt-4 py-3 bg-[#FFD700] border-2 border-black rounded font-bold text-base shadow-[3px_3px_0_#000] hover:bg-yellow-300 active:shadow-none active:translate-y-1 transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-paper-plane mr-2"></i>送信
+                            </button>
                         </div>
                     </div>
 
