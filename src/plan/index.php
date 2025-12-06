@@ -107,19 +107,10 @@ function getToySubNav($current, $target, $label, $color) {
                     </div>
                 </div>
 
-                <div class="bg-white border-4 border-black p-4 shadow-[6px_6px_0_#FFA500] relative group hover:scale-[1.02] transition-transform">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="bg-yellow-400 text-black text-xs font-heavy px-2 py-1 border-2 border-black">
-                            <i class="fa-solid fa-person-running"></i> RUNNING!
-                        </span>
-                        <button class="w-8 h-8 bg-gray-200 border-2 border-black flex items-center justify-center hover:bg-blue-300">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                    </div>
-                    <h3 class="font-heavy text-lg leading-tight mb-2">テストコードのカバレッジを80%以上にする</h3>
-                    <div class="text-xs font-bold text-gray-500 font-dot">
-                        <i class="fa-regular fa-calendar"></i> 2024/12/02 ～ 2024/12/08
-                    </div>
+                <div class="w-16 h-16 bg-green-500 text-white flex items-center justify-center font-heavy text-3xl border-4 border-black rounded-full">M</div>
+                <div>
+                    <span class="bg-green-200 border-2 border-black px-2 py-1 text-xs font-bold">まほ</span>
+                    <p class="font-bold text-xl mt-2 font-dot">「DBつくるぞー」</p>
                 </div>
 
                 <div class="bg-gray-100 border-4 border-gray-400 p-4 shadow-none relative opacity-80">
