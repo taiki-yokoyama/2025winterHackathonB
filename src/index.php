@@ -101,8 +101,8 @@ function getTabStyle($currentPage, $targetPage) {
             case 'plan': include './plan/index.php'; break;
             case 'check': include './check/check.php'; break;
             case 'action': include './action/index.php'; break;
+            case 'zukan': include './cardbook/cardbook.php'; break;
             case 'gacha': include './gacha/gacha.php'; break;
-            case 'zukan': include './zukan/zukan.php'; break;
             default: include './plan/index.php'; break;
         }
         ?>
