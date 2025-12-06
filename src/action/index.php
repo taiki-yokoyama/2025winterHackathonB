@@ -1,101 +1,88 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDCAガチャ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Noto Sans JP', sans-serif; }
-    </style>
-</head>
-<body>
+<!-- Action画面のコンテンツ（index.phpからincludeされる） -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+.toy-title { font-family: 'Bangers', cursive; letter-spacing: 2px; }
+</style>
 
-    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-        <div class="flex items-center space-x-3 mb-2">
-            <div class="p-2 bg-teal-100 rounded-lg text-teal-600">
-                <i class="fa-solid fa-bullseye text-xl"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold text-gray-800">Action - 次の一手フェーズ</h2>
-                <p class="text-sm text-gray-500">チームメンバーそれぞれに対して、次に取るべきアクションを提案しましょう。</p>
-            </div>
+<div class="bg-white rounded-xl shadow-sm p-6 mb-6 border-4 border-black" style="background: linear-gradient(135deg, #FF6B9D 0%, #FEC163 100%);">
+    <div class="flex items-center space-x-3 mb-2">
+        <div class="p-3 bg-yellow-300 rounded-full border-4 border-black shadow-[4px_4px_0_#000]">
+            <i class="fa-solid fa-bullseye text-2xl text-red-600"></i>
+        </div>
+        <div class="text-white">
+            <h2 class="text-3xl font-black drop-shadow-[3px_3px_0_#000] toy-title" style="text-shadow: 3px 3px 0 #000;">ACTION!</h2>
+            <p class="text-sm font-bold text-yellow-100">次の一手を送ろう！</p>
         </div>
     </div>
+</div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-xl shadow-sm p-6">
-            <div class="flex items-center mb-4">
-                <div class="w-10 h-10 rounded-full bg-teal-400 text-white flex items-center justify-center font-bold mr-3">ぼ</div>
-                <div>
-                    <h3 class="font-bold text-gray-800">ぼーちゃん</h3>
-                    <p class="text-xs text-gray-400">チームメンバー</p>
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="text-xs text-gray-500 mb-2 block">このメンバーへの次の一手</label>
-                <textarea class="w-full p-3 border border-gray-200 rounded-lg text-sm h-24 focus:ring-2 focus:ring-teal-400 focus:outline-none" placeholder="例：ペアプログラミングで一緒にリファクタリングをやろう"></textarea>
-            </div>
-
-            <button class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 rounded-lg shadow-md mb-6 transition">
-                <i class="fa-regular fa-paper-plane mr-2"></i> アクションを送信
-            </button>
-
-            <div>
-                <h4 class="text-sm font-bold text-gray-700 flex items-center mb-3">
-                    <i class="fa-solid fa-bullseye text-teal-500 mr-2"></i> 受け取ったアクション
-                </h4>
-                
-                <div class="space-y-3">
-                    <div class="bg-teal-50 rounded-lg p-3 border border-teal-100">
-                        <div class="flex justify-between items-center mb-1">
-                            <div class="flex items-center">
-                                <div class="w-5 h-5 rounded-full bg-green-400 text-white text-[10px] flex items-center justify-center mr-2">ち</div>
-                                <span class="text-xs font-bold text-gray-700">ちゃんり</span>
-                            </div>
-                            <span class="text-[10px] text-gray-400">2025/12/6</span>
-                        </div>
-                        <div class="bg-white p-2 rounded text-sm text-gray-600">
-                            またわからないところあったら聞きにいきます！
-                        </div>
-                    </div>
-                    <div class="bg-teal-50 rounded-lg p-3 border border-teal-100">
-                        <div class="flex justify-between items-center mb-1">
-                            <div class="flex items-center">
-                                <div class="w-5 h-5 rounded-full bg-green-400 text-white text-[10px] flex items-center justify-center mr-2">ち</div>
-                                <span class="text-xs font-bold text-gray-700">ちゃんり</span>
-                            </div>
-                            <span class="text-[10px] text-gray-400">2025/12/6</span>
-                        </div>
-                        <div class="bg-white p-2 rounded text-sm text-gray-600">
-                            ふー
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm p-6 h-full">
-            <div class="flex items-center mb-4">
-                <div class="w-10 h-10 rounded-full bg-green-400 text-white flex items-center justify-center font-bold mr-3">ち</div>
-                <div>
-                    <h3 class="font-bold text-gray-800">ちゃんり</h3>
-                    <p class="text-xs text-gray-400">(あなた)</p>
-                </div>
-            </div>
-
-            <h4 class="text-sm font-bold text-gray-700 flex items-center mb-3">
-                <i class="fa-solid fa-bullseye text-teal-500 mr-2"></i> 受け取ったアクション
-            </h4>
-
-            <div class="flex flex-col items-center justify-center h-48 text-gray-400 text-sm">
-                まだアクションがありません
-            </div>
-        </div>
-    </div>
+<div class="max-w-4xl mx-auto">
+    <h3 class="text-2xl font-black text-gray-800 mb-6 toy-title">あなたへのActionの提案</h3>
     
-</body>
-</html>
+    <div class="space-y-6">
+        <div class="bg-white rounded-3xl p-6 border-6 border-yellow-400 shadow-[8px_8px_0_#000] transform hover:translate-y-1 hover:shadow-[4px_4px_0_#000] transition-all">
+            <div class="flex items-start gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-full border-4 border-black flex items-center justify-center font-black text-xl shadow-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">ぼ</div>
+                        <div>
+                            <h4 class="font-black text-lg text-gray-800">ぼーちゃん</h4>
+                            <p class="text-xs text-gray-500 flex items-center"><i class="fa-regular fa-calendar mr-1"></i> 2024/12/05</p>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-100 rounded-2xl p-4 border-4 border-yellow-300 shadow-inner">
+                        <p class="text-gray-800 font-bold flex items-start gap-2"><i class="fa-solid fa-lightbulb text-yellow-600 mt-1"></i> もう少しペアプロの時間を増やせるといいかも</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border-6 border-yellow-400 shadow-[8px_8px_0_#000] transform hover:translate-y-1 hover:shadow-[4px_4px_0_#000] transition-all">
+            <div class="flex items-start gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-full border-4 border-black flex items-center justify-center font-black text-xl shadow-lg" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">ま</div>
+                        <div>
+                            <h4 class="font-black text-lg text-gray-800">まおちゃん</h4>
+                            <p class="text-xs text-gray-500 flex items-center"><i class="fa-regular fa-calendar mr-1"></i> 2024/12/05</p>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-100 rounded-2xl p-4 border-4 border-yellow-300 shadow-inner">
+                        <p class="text-gray-800 font-bold flex items-start gap-2"><i class="fa-solid fa-lightbulb text-yellow-600 mt-1"></i> テストコードをもう少し充実させると完璧です</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border-6 border-yellow-400 shadow-[8px_8px_0_#000] transform hover:translate-y-1 hover:shadow-[4px_4px_0_#000] transition-all">
+            <div class="flex items-start gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-full border-4 border-black flex items-center justify-center font-black text-xl shadow-lg" style="background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: white;">ち</div>
+                        <div>
+                            <h4 class="font-black text-lg text-gray-800">ちゃんり</h4>
+                            <p class="text-xs text-gray-500 flex items-center"><i class="fa-regular fa-calendar mr-1"></i> 2024/12/04</p>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-100 rounded-2xl p-4 border-4 border-yellow-300 shadow-inner">
+                        <p class="text-gray-800 font-bold flex items-start gap-2"><i class="fa-solid fa-lightbulb text-yellow-600 mt-1"></i> 引き続きこの調子で！レビューのスピードが早くて助かってます</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-12 relative">
+        <div class="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl blur opacity-30"></div>
+        <div class="relative bg-gradient-to-r from-yellow-400 to-orange-400 rounded-3xl p-8 border-6 border-black shadow-[8px_8px_0_#000] text-center">
+            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-green-500 rounded-full border-4 border-black flex items-center justify-center text-white font-black text-2xl shadow-lg animate-bounce">
+                <i class="fa-solid fa-arrow-down"></i>
+            </div>
+            <h3 class="text-2xl font-black text-white mb-3 toy-title drop-shadow-[2px_2px_0_#000]">これを見てプランを作ろう！</h3>
+            <p class="text-white font-bold mb-6">受け取ったActionをもとに、次のサイクルの計画を立てましょう 🎯</p>
+            <a href="?page=plan" class="inline-block bg-red-500 hover:bg-red-600 text-white font-black py-4 px-8 rounded-2xl shadow-[6px_6px_0_#000] border-4 border-black transform hover:translate-y-1 hover:shadow-[3px_3px_0_#000] transition-all text-lg uppercase toy-title">
+                <i class="fa-solid fa-file-lines mr-2"></i> プラン作成へGO!
+            </a>
+        </div>
+    </div>
+</div>
