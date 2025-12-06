@@ -38,18 +38,12 @@ if (empty($user['name'])) {
         .toy-box { border: 6px solid #000; box-shadow: 12px 12px 0 #000; }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    
+<body class="">
+
+    <?php include '../components/header.php'; ?>
+
     <div class="max-w-4xl mx-auto">
-        
-        <!-- ヘッダー -->
-        <header class="mb-8 text-center">
-            <a href="/" class="inline-block">
-                <div class="toy-box p-3 bg-[#FFD700] transform -rotate-1 relative hover:rotate-0 transition">
-                    <h1 class="font-heavy text-3xl text-black [text-shadow:2px_2px_0_#fff]">③でPON</h1>
-                </div>
-            </a>
-        </header>
+
 
         <!-- マイページ -->
         <section class="toy-box p-6 md:p-8 bg-white relative">
