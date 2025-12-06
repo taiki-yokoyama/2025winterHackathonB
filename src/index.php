@@ -148,10 +148,10 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <a href="/login.php" class="inline-block bg-[#00FFFF] text-black font-heavy text-2xl md:text-3xl py-4 px-8 border-6 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105">
+                    <a href="/auth/login.php" class="inline-block bg-[#00FFFF] text-black font-heavy text-2xl md:text-3xl py-4 px-8 border-6 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105">
                         <span class="inline-block">ログイン 🔑</span>
                     </a>
-                    <a href="/register.php" class="inline-block bg-[#FFD700] text-black font-heavy text-2xl md:text-3xl py-4 px-8 border-6 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105">
+                    <a href="/auth/register.php" class="inline-block bg-[#FFD700] text-black font-heavy text-2xl md:text-3xl py-4 px-8 border-6 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105">
                         <span class="inline-block">新規登録 ✨</span>
                     </a>
                 </div>
@@ -320,10 +320,10 @@
             </p>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="/login.php" class="inline-block bg-white text-black font-heavy text-2xl md:text-3xl py-4 px-8 border-6 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105">
+                <a href="/auth/login.php" class="inline-block bg-white text-black font-heavy text-2xl md:text-3xl py-4 px-8 border-6 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105">
                     <span class="inline-block">ログイン 🔑</span>
                 </a>
-                <a href="/register.php" class="inline-block bg-[#00FFFF] text-black font-heavy text-2xl md:text-3xl py-4 px-8 border-6 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105">
+                <a href="/auth/register.php" class="inline-block bg-[#00FFFF] text-black font-heavy text-2xl md:text-3xl py-4 px-8 border-6 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105">
                     <span class="inline-block">新規登録 ✨</span>
                 </a>
             </div>

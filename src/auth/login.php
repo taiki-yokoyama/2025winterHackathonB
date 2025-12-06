@@ -12,45 +12,34 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
-    $password_confirm = $_POST['password_confirm'] ?? '';
     
     // バリデーション
-    if (empty($email) || empty($password) || empty($password_confirm)) {
-        $error = 'すべての項目を入力してください';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = '有効なメールアドレスを入力してください';
-    } elseif ($password !== $password_confirm) {
-        $error = 'パスワードが一致しません';
-    } elseif (strlen($password) < 6) {
-        $error = 'パスワードは6文字以上で入力してください';
+    if (empty($email) || empty($password)) {
+        $error = 'メールアドレスとパスワードを入力してください';
     } else {
         // データベース接続
-        require_once 'dbconnect.php';
+        require_once '../dbconnect.php';
         
         try {
-            // メールアドレスの重複チェック
-            $stmt = $dbh->prepare('SELECT id FROM users WHERE email = ?');
+            // ユーザー検索
+            $stmt = $dbh->prepare('SELECT id, email, password, coins FROM users WHERE email = ?');
             $stmt->execute([$email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            if ($stmt->fetch()) {
-                $error = 'このメールアドレスは既に登録されています';
-            } else {
-                // ユーザー登録
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $stmt = $dbh->prepare('INSERT INTO users (email, password, created_at) VALUES (?, ?, NOW())');
-                $stmt->execute([$email, $hashed_password]);
-                
-                // セッションに保存してログイン状態に
-                $_SESSION['user_id'] = $dbh->lastInsertId();
-                $_SESSION['email'] = $email;
-                $_SESSION['coins'] = 0;
+            if ($user && password_verify($password, $user['password'])) {
+                // ログイン成功
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['coins'] = $user['coins'];
                 
                 // プランページにリダイレクト
                 header('Location: /plan/');
                 exit;
+            } else {
+                $error = 'メールアドレスまたはパスワードが正しくありません';
             }
         } catch (PDOException $e) {
-            $error = '登録に失敗しました。もう一度お試しください。';
+            $error = 'ログインに失敗しました。もう一度お試しください。';
         }
     }
 }
@@ -60,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新規登録 - ③でPON</title>
+    <title>ログイン - ③でPON</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
@@ -105,10 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </a>
         </header>
 
-        <!-- 登録フォーム -->
+        <!-- ログインフォーム -->
         <section class="toy-box p-6 md:p-8 bg-white relative">
-            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-[#FF69B4] border-4 border-black px-6 py-2 font-heavy text-xl shadow-[4px_4px_0_#000] rotate-2 z-10 text-white">
-                新規登録 ✨
+            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-[#87CEEB] border-4 border-black px-6 py-2 font-heavy text-xl shadow-[4px_4px_0_#000] rotate-2 z-10 text-white">
+                ログイン 🔑
             </div>
             
             <div class="mt-8">
@@ -130,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             name="email" 
                             required
                             value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
-                            class="w-full px-4 py-3 border-4 border-black text-lg focus:outline-none focus:border-[#FF69B4] transition"
+                            class="w-full px-4 py-3 border-4 border-black text-lg focus:outline-none focus:border-[#87CEEB] transition"
                             placeholder="example@email.com"
                         >
                     </div>
@@ -145,45 +134,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             id="password" 
                             name="password" 
                             required
-                            minlength="6"
-                            class="w-full px-4 py-3 border-4 border-black text-lg focus:outline-none focus:border-[#FF69B4] transition"
-                            placeholder="6文字以上"
+                            class="w-full px-4 py-3 border-4 border-black text-lg focus:outline-none focus:border-[#87CEEB] transition"
+                            placeholder="パスワードを入力"
                         >
                     </div>
                     
-                    <!-- パスワード確認 -->
-                    <div>
-                        <label for="password_confirm" class="block font-bold text-lg mb-2">
-                            🔒 パスワード（確認）
-                        </label>
-                        <input 
-                            type="password" 
-                            id="password_confirm" 
-                            name="password_confirm" 
-                            required
-                            minlength="6"
-                            class="w-full px-4 py-3 border-4 border-black text-lg focus:outline-none focus:border-[#FF69B4] transition"
-                            placeholder="もう一度入力"
-                        >
-                    </div>
-                    
-                    <!-- 登録ボタン -->
+                    <!-- ログインボタン -->
                     <button 
                         type="submit"
-                        class="w-full bg-[#FF69B4] text-white font-heavy text-2xl py-4 border-4 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105"
+                        class="w-full bg-[#87CEEB] text-white font-heavy text-2xl py-4 border-4 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all transform hover:scale-105"
                     >
-                        登録する 🚀
+                        ログイン 🚀
                     </button>
                 </form>
                 
-                <!-- ログインリンク -->
+                <!-- 新規登録リンク -->
                 <div class="mt-6 text-center">
-                    <p class="text-gray-600 mb-2">既にアカウントをお持ちの方</p>
+                    <p class="text-gray-600 mb-2">アカウントをお持ちでない方</p>
                     <a 
-                        href="/login.php" 
-                        class="inline-block bg-[#87CEEB] text-black font-bold text-lg py-2 px-6 border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition"
+                        href="/auth/register.php" 
+                        class="inline-block bg-[#FF69B4] text-white font-bold text-lg py-2 px-6 border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition"
                     >
-                        ログイン
+                        新規登録
                     </a>
                 </div>
             </div>
