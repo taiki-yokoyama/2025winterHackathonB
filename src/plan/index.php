@@ -1,84 +1,52 @@
-<!-- Plan画面のコンテンツ（index.phpからincludeされる） -->
-<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-    <div class="flex items-center space-x-3 mb-2">
-        <div class="p-2 bg-red-100 rounded-lg text-red-500">
-            <i class="fa-regular fa-file-lines text-xl"></i>
-        </div>
-        <div>
-            <h2 class="text-xl font-bold text-gray-800">Plan - 計画フェーズ</h2>
-            <p class="text-sm text-gray-500">次のサイクルに向けた計画を立てましょう。計画はチーム全員に共有されます。</p>
-        </div>
-    </div>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- 左側：あなたの計画 -->
-    <div class="bg-white rounded-xl shadow-sm p-6 h-full flex flex-col">
-        <div class="flex items-center mb-4">
-            <div class="w-8 h-8 rounded-full bg-orange-400 text-white flex items-center justify-center font-bold mr-3">ち</div>
-            <div>
-                <h3 class="font-bold text-gray-800">あなたの計画</h3>
-                <p class="text-xs text-gray-400">チーム全員に公開されます</p>
-            </div>
-        </div>
-
-        <form action="" method="POST" class="flex-grow flex flex-col">
-            <label class="text-sm text-gray-600 mb-2">次にやること</label>
-            <textarea 
-                name="plan_content" 
-                id="planContent"
-                class="w-full flex-grow p-4 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-red-400 bg-gray-50" 
-                rows="8" 
-                placeholder="例：フレンチトースト作る"
-                oninput="updateCharCount()"
-            >フレンチトースト作る</textarea>
-            <div class="text-right text-xs text-gray-400 mt-1 mb-4">
-                <span id="charCount">10</span>文字
-            </div>
-            <button 
-                type="submit" 
-                class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-lg shadow-md transition duration-200"
-            >
-                <i class="fa-regular fa-paper-plane mr-2"></i> 計画を保存 & 共有
-            </button>
-        </form>
-
-        <div class="mt-4 bg-yellow-50 border border-yellow-100 rounded-lg p-3 flex items-center text-sm text-gray-600">
-            <i class="fa-regular fa-circle-check text-green-500 mr-2"></i>
-            Check → Action → Plan を完了すると、コインが1枚もらえます！
-        </div>
-    </div>
-
-    <!-- 右側：チームメンバーの計画 -->
-    <div class="bg-white rounded-xl shadow-sm p-6 h-full">
-        <div class="flex items-center mb-4">
-            <i class="fa-regular fa-file-lines text-red-500 mr-2"></i>
-            <h3 class="font-bold text-gray-800">チームメンバーの計画</h3>
-        </div>
-
-        <div class="bg-orange-50 rounded-lg p-6 border border-orange-100 flex flex-col items-center justify-center h-64">
-            <div class="w-full flex items-start mb-2">
-                <div class="w-8 h-8 rounded-full bg-orange-400 text-white flex items-center justify-center font-bold mr-3">ぼ</div>
-                <span class="font-bold text-gray-700">ぼーちゃん</span>
-            </div>
-            <p class="text-gray-400 text-sm">まだ計画が登録されていません</p>
-        </div>
-    </div>
-</div>
-
-<script>
-    function updateCharCount() {
-        const textarea = document.getElementById('planContent');
-        const charCount = document.getElementById('charCount');
-        if (textarea && charCount) {
-            charCount.textContent = textarea.value.length;
-        }
-    }
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 h-full">
     
-    // ページ読み込み時に文字数を更新
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', updateCharCount);
-    } else {
-        updateCharCount();
-    }
-</script>
+    <div class="toy-box p-6 bg-[#FF69B4] relative transform -rotate-2">
+        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-yellow-400 border-4 border-black px-6 py-2 font-heavy text-2xl shadow-[4px_4px_0_#000] rotate-3 z-10">
+            MY MISSION 📝
+        </div>
+
+        <div class="mt-10">
+            <form action="" method="POST" class="relative z-10">
+                <div class="relative p-2 bg-white border-4 border-dashed border-black shadow-inner">
+                    <textarea class="w-full h-56 bg-transparent resize-none focus:outline-none font-heavy text-gray-800 text-2xl leading-relaxed placeholder-gray-300 p-2" 
+                        style="background-image: repeating-linear-gradient(transparent, transparent 38px, #ccc 39px, #ccc 40px); line-height: 40px;"
+                        placeholder="ここに おえかき するみたいに&#13;&#10;もくひょうを かいてね！"></textarea>
+                    <div class="absolute bottom-4 right-4 text-4xl transform rotate-12">🖍️</div>
+                </div>
+
+                <button type="button" class="mt-6 w-full bg-[#00FFFF] text-black font-heavy text-3xl py-4 border-4 border-black shadow-[8px_8px_0_#000] hover:translate-y-2 hover:shadow-[4px_4px_0_#000] transition-all group relative overflow-hidden">
+                    <span class="relative z-10 group-hover:scale-110 inline-block transition">かきこむ！</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="bg-[#32CD32] border-4 border-black p-6 shadow-[12px_12px_0_#006400] relative mt-8 lg:mt-0 rounded-[1rem]">
+        <h3 class="text-center font-heavy text-2xl mb-8 bg-white border-4 border-black inline-block px-6 py-2 shadow-[4px_4px_0_#000] mx-auto block transform rotate-2">
+            みんなのクエストだよ！
+        </h3>
+
+        <div class="space-y-6 relative z-10">
+            <div class="bg-white border-4 border-black p-4 flex items-center gap-4 shadow-[6px_6px_0_#FF00FF] transform rotate-3 hover:rotate-0 transition relative">
+                <div class="absolute -top-3 -left-3 w-8 h-8 bg-red-500 rounded-full border-4 border-black shadow-sm"></div>
+                
+                <div class="w-16 h-16 bg-blue-500 text-white flex items-center justify-center font-heavy text-3xl border-4 border-black rounded-full">B</div>
+                <div>
+                    <span class="bg-blue-200 border-2 border-black px-2 py-1 text-xs font-bold">ぼーちゃん</span>
+                    <p class="font-bold text-xl mt-2 font-dot">「デザインかんせい！」</p>
+                </div>
+            </div>
+
+            <div class="bg-white border-4 border-black p-4 flex items-center gap-4 shadow-[6px_6px_0_#FFFF00] transform -rotate-2 hover:rotate-0 transition relative">
+                <div class="absolute -top-3 -right-3 w-8 h-8 bg-blue-500 rounded-full border-4 border-black shadow-sm"></div>
+
+                <div class="w-16 h-16 bg-green-500 text-white flex items-center justify-center font-heavy text-3xl border-4 border-black rounded-full">M</div>
+                <div>
+                    <span class="bg-green-200 border-2 border-black px-2 py-1 text-xs font-bold">まお</span>
+                    <p class="font-bold text-xl mt-2 font-dot">「DBつくるぞー」</p>
+                </div>
+            </div>
+        </div>
+        <div class="absolute inset-0 bg-[radial-gradient(#000_2px,transparent_2px)] bg-[size:20px_20px] opacity-10 pointer-events-none"></div>
+    </div>
+</div>
