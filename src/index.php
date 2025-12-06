@@ -99,7 +99,7 @@ function getTabStyle($currentPage, $targetPage) {
         // 簡易ルーティング
         switch($page) {
             case 'plan': include 'plan.php'; break;
-            case 'check': include 'check.php'; break;
+            case 'check': include './check/check.php'; break;
             case 'action': include 'action.php'; break;
             case 'gacha': include 'gacha.php'; break;
             case 'zukan': include 'zukan.php'; break;
