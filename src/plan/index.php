@@ -42,7 +42,7 @@
 
                 <div class="w-16 h-16 bg-green-500 text-white flex items-center justify-center font-heavy text-3xl border-4 border-black rounded-full">M</div>
                 <div>
-                    <span class="bg-green-200 border-2 border-black px-2 py-1 text-xs font-bold">まお</span>
+                    <span class="bg-green-200 border-2 border-black px-2 py-1 text-xs font-bold">まほ</span>
                     <p class="font-bold text-xl mt-2 font-dot">「DBつくるぞー」</p>
                 </div>
             </div>
