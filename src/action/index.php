@@ -9,7 +9,7 @@ $current_user_id = $_SESSION['user_id'] ?? 1;
 
 // 自分宛のActionを取得
 $stmt = $dbh->prepare('
-    SELECT a.*, u.name as from_user_name, u.avatar, u.avatar_color
+    SELECT a.*, u.name as from_user_name
     FROM actions a
     JOIN users u ON a.from_user_id = u.id
     WHERE a.to_user_id = ?
@@ -17,6 +17,9 @@ $stmt = $dbh->prepare('
 ');
 $stmt->execute([$current_user_id]);
 $actions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// アバター色の配列
+$avatar_colors = ['bg-pink-400', 'bg-blue-400', 'bg-green-400', 'bg-purple-400', 'bg-yellow-400', 'bg-red-400'];
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -64,13 +67,17 @@ $actions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <p class="text-gray-500 text-lg font-bold">まだActionがありません 📭</p>
             </div>
         <?php else: ?>
-            <?php foreach ($actions as $action): ?>
+            <?php foreach ($actions as $index => $action): ?>
+                <?php 
+                $avatar_color = $avatar_colors[$action['from_user_id'] % count($avatar_colors)];
+                $avatar_initial = mb_substr($action['from_user_name'], 0, 1);
+                ?>
                 <div class="bg-white rounded-3xl p-6 border-6 border-yellow-400 shadow-[8px_8px_0_#000] transform hover:translate-y-1 hover:shadow-[4px_4px_0_#000] transition-all">
                     <div class="flex items-start gap-4">
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 rounded-full border-4 border-black flex items-center justify-center font-black text-xl shadow-lg <?php echo htmlspecialchars($action['avatar_color']); ?> text-white">
-                                    <?php echo htmlspecialchars($action['avatar']); ?>
+                                <div class="w-12 h-12 rounded-full border-4 border-black flex items-center justify-center font-black text-xl shadow-lg <?php echo $avatar_color; ?> text-white">
+                                    <?php echo htmlspecialchars($avatar_initial); ?>
                                 </div>
                                 <div>
                                     <h4 class="font-black text-lg text-gray-800"><?php echo htmlspecialchars($action['from_user_name']); ?></h4>
