@@ -25,9 +25,11 @@ function getToySubNav($current, $target, $label, $color) {
 </head>
 
 <body>
-    <div class="h-full flex flex-col">
+    <?php include '../components/header.php'; ?>
+    
+    <div class="h-full flex flex-col px-4">
 
-        <div class="flex gap-4 mb-6 px-2">
+        <div class="flex gap-4 mb-6">
             <a href="?page=plan&sub=create" class="<?php echo getToySubNav($sub, 'create', '作成', 'pink'); ?>">
                 <i class="fa-solid fa-pen-nib mr-1"></i> MAKE
             </a>

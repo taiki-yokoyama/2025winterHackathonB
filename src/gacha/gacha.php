@@ -36,7 +36,9 @@
 </head>
 
 <body>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 h-full items-center">
+    <?php include '../components/header.php'; ?>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 h-full items-center px-4">
         
         <div class="relative transform scale-100 lg:scale-110 origin-center mx-auto">
             
