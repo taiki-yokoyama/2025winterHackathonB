@@ -1,6 +1,71 @@
 <?php
-// サブページ判定 (デフォルトは作成画面)
-$sub = isset($_GET['sub']) ? $_GET['sub'] : 'create';
+/**
+ * プランページ
+ * 
+ * 要件 9.4: エラーハンドリング
+ * - try-catchブロック
+ * - エラーログ記録
+ * - ユーザーフレンドリーなエラーメッセージ
+ */
+
+// エラーレポートを設定（本番環境では無効化すべき）
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // エラーを画面に表示しない
+ini_set('log_errors', 1); // エラーをログに記録
+
+// セキュリティ関数をインクルード（要件 9.5）
+require_once __DIR__ . '/../security_functions.php';
+
+// セキュアなセッション開始（要件 9.5）
+startSecureSession();
+
+// エラーメッセージ
+$errorMessage = null;
+$teamPlans = [];
+
+try {
+    // データベース接続と評価関数を読み込み
+    require_once __DIR__ . '/../dbconnect.php';
+    require_once __DIR__ . '/../evaluation_functions.php';
+    
+    // データベース接続の確認
+    if (!isset($dbh) || !($dbh instanceof PDO)) {
+        throw new Exception("Database connection not available");
+    }
+    
+    // サブページ判定 (デフォルトは作成画面)
+    $sub = isset($_GET['sub']) ? htmlspecialchars($_GET['sub'], ENT_QUOTES, 'UTF-8') : 'create';
+    
+    // サブページのバリデーション
+    $validSubs = ['create', 'my', 'team'];
+    if (!in_array($sub, $validSubs)) {
+        error_log("Invalid sub parameter in plan/index.php: " . $sub);
+        $sub = 'create'; // デフォルトに戻す
+    }
+    
+    // チーム計画を取得（teamタブの場合）
+    if ($sub === 'team') {
+        try {
+            $teamPlans = getTeamPlans($dbh);
+        } catch (PDOException $e) {
+            error_log("Database error fetching team plans: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            $errorMessage = 'チーム計画の取得中にエラーが発生しました。';
+            $teamPlans = [];
+        }
+    }
+    
+} catch (PDOException $e) {
+    // データベースエラーのログ記録（要件 9.4）
+    error_log("Database error in plan/index.php: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
+    $errorMessage = 'データベースエラーが発生しました。しばらくしてから再度お試しください。';
+} catch (Exception $e) {
+    // その他のエラーのログ記録（要件 9.4）
+    error_log("Error in plan/index.php: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
+    $errorMessage = 'エラーが発生しました。しばらくしてから再度お試しください。';
+}
 
 // トイボックス風のサブメニューボタン関数
 function getToySubNav($current, $target, $label, $color) {
@@ -28,6 +93,16 @@ function getToySubNav($current, $target, $label, $color) {
     <?php include '../components/header.php'; ?>
     
     <div class="h-full flex flex-col px-4">
+
+        <?php if ($errorMessage): ?>
+            <!-- エラーメッセージ表示（要件 9.4） -->
+            <div class="bg-red-100 border-4 border-red-500 p-4 rounded-lg shadow-[4px_4px_0_#000] mb-6">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-exclamation-triangle text-2xl text-red-500 mr-3"></i>
+                    <p class="text-red-700 font-bold"><?php echo escapeHtml($errorMessage); ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div class="flex gap-4 mb-6">
             <a href="?page=plan&sub=create" class="<?php echo getToySubNav($sub, 'create', '作成', 'pink'); ?>">
@@ -148,58 +223,86 @@ function getToySubNav($current, $target, $label, $color) {
             <div class="bg-[#32CD32] border-4 border-black p-6 shadow-[12px_12px_0_#006400] h-full flex flex-col relative rounded-[1rem]">
                 
                 <div class="bg-white border-4 border-black p-4 mb-6 relative z-10">
-                    <div class="text-xs font-heavy mb-2 text-center">▼ メンバーで絞り込み</div>
-                    <div class="flex justify-center flex-wrap gap-3">
-                        <button class="w-10 h-10 rounded-full bg-blue-500 text-white font-heavy border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000]">全</button>
-                        <button class="w-10 h-10 rounded-full bg-pink-400 text-white font-heavy border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000]">A</button>
-                        <button class="w-10 h-10 rounded-full bg-blue-400 text-white font-heavy border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000]">B</button>
-                        <button class="w-10 h-10 rounded-full bg-purple-400 text-white font-heavy border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000]">C</button>
+                    <div class="text-xs font-heavy mb-2 text-center">▼ チーム計画</div>
+                    <div class="text-center text-sm font-bold text-gray-700">
+                        <i class="fa-solid fa-users mr-1"></i> 全メンバーの共有計画
                     </div>
                 </div>
 
                 <div class="flex-grow overflow-y-auto space-y-6 pr-2">
-                    
-                    <div class="relative pl-4 border-l-4 border-dashed border-black/30">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-pink-400 border-2 border-black text-white flex items-center justify-center font-heavy">A</div>
-                            <span class="font-heavy bg-white px-2 border-2 border-black shadow-[2px_2px_0_#000]">メンバーA</span>
+                    <?php if (empty($teamPlans)): ?>
+                        <!-- チーム計画がない場合 -->
+                        <div class="bg-white border-4 border-black p-6 text-center shadow-[4px_4px_0_rgba(0,0,0,0.2)]">
+                            <div class="text-4xl mb-3">📝</div>
+                            <p class="font-heavy text-gray-600">まだチーム計画がありません</p>
+                            <p class="text-sm text-gray-500 mt-2">評価ページからチーム計画を追加してください</p>
                         </div>
-
-                        <div class="bg-white border-4 border-black p-3 mb-3 shadow-[4px_4px_0_#FF69B4] transition">
-                            <div class="flex justify-between items-start">
-                                <span class="bg-yellow-400 text-[10px] font-heavy px-1 border border-black mb-1 inline-block">RUNNING</span>
-                                <i class="fa-regular fa-comment text-gray-400 hover:text-blue-500 cursor-pointer"></i>
-                            </div>
-                            <p class="font-bold text-sm leading-tight">毎日30分、ペアプロの時間を設ける</p>
-                            <div class="text-[10px] text-gray-500 mt-1 font-dot">2024/12/02 - 12/08</div>
-                        </div>
+                    <?php else: ?>
+                        <!-- チーム計画を表示 -->
+                        <?php 
+                        // ユーザーごとにグループ化
+                        $plansByUser = [];
+                        foreach ($teamPlans as $plan) {
+                            $userId = $plan['user_id'];
+                            if (!isset($plansByUser[$userId])) {
+                                $plansByUser[$userId] = [
+                                    'user_name' => $plan['user_name'] ?? 'Unknown User',
+                                    'user_icon' => $plan['user_icon'] ?? null,
+                                    'plans' => []
+                                ];
+                            }
+                            $plansByUser[$userId]['plans'][] = $plan;
+                        }
                         
-                        <div class="bg-white border-4 border-black p-3 shadow-[4px_4px_0_#FF69B4] transition">
-                            <div class="flex justify-between items-start">
-                                <span class="bg-yellow-400 text-[10px] font-heavy px-1 border border-black mb-1 inline-block">RUNNING</span>
-                                <i class="fa-regular fa-comment text-gray-400 hover:text-blue-500 cursor-pointer"></i>
+                        // 各ユーザーの計画を表示
+                        $colors = ['pink-400', 'blue-400', 'purple-400', 'yellow-400', 'green-400', 'red-400'];
+                        $shadowColors = ['#FF69B4', '#00BFFF', '#9370DB', '#FFD700', '#32CD32', '#FF6347'];
+                        $colorIndex = 0;
+                        
+                        foreach ($plansByUser as $userId => $userData): 
+                            $color = $colors[$colorIndex % count($colors)];
+                            $shadowColor = $shadowColors[$colorIndex % count($shadowColors)];
+                            $colorIndex++;
+                            
+                            // ユーザー名の最初の文字を取得（アバター用）
+                            $initial = mb_substr($userData['user_name'], 0, 1);
+                            
+                            // XSS対策: 全ての出力をエスケープ（要件 9.5）
+                            $userNameEscaped = escapeHtml($userData['user_name']);
+                            $initialEscaped = escapeHtml($initial);
+                        ?>
+                        <div class="relative pl-4 border-l-4 border-dashed border-black/30">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="w-8 h-8 rounded-full bg-<?php echo $color; ?> border-2 border-black text-white flex items-center justify-center font-heavy">
+                                    <?php echo $initialEscaped; ?>
+                                </div>
+                                <span class="font-heavy bg-white px-2 border-2 border-black shadow-[2px_2px_0_#000]">
+                                    <?php echo $userNameEscaped; ?>
+                                </span>
                             </div>
-                            <p class="font-bold text-sm leading-tight">レビューのフィードバックを24時間以内に返す</p>
-                            <div class="text-[10px] text-gray-500 mt-1 font-dot">2024/12/02 - 12/08</div>
-                        </div>
-                    </div>
 
-                    <div class="relative pl-4 border-l-4 border-dashed border-black/30">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-400 border-2 border-black text-white flex items-center justify-center font-heavy">B</div>
-                            <span class="font-heavy bg-white px-2 border-2 border-black shadow-[2px_2px_0_#000]">メンバーB</span>
-                        </div>
-
-                        <div class="bg-white border-4 border-black p-3 shadow-[4px_4px_0_#00BFFF] transition">
-                            <div class="flex justify-between items-start">
-                                <span class="bg-yellow-400 text-[10px] font-heavy px-1 border border-black mb-1 inline-block">RUNNING</span>
-                                <i class="fa-regular fa-comment text-gray-400 hover:text-blue-500 cursor-pointer"></i>
+                            <?php foreach ($userData['plans'] as $plan): 
+                                // XSS対策: 各プランの出力をエスケープ（要件 9.5）
+                                $planText = escapeHtml($plan['plan_text']);
+                                $planDate = escapeHtml(date('Y/m/d H:i', strtotime($plan['created_at'])));
+                            ?>
+                            <div class="bg-white border-4 border-black p-3 mb-3 shadow-[4px_4px_0_rgba(0,0,0,0.2)] transition hover:scale-[1.02]">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="bg-blue-400 text-white text-[10px] font-heavy px-2 py-1 border border-black inline-block">
+                                        <i class="fa-solid fa-flag"></i> TEAM PLAN
+                                    </span>
+                                    <span class="text-[10px] text-gray-500 font-dot">
+                                        <?php echo $planDate; ?>
+                                    </span>
+                                </div>
+                                <p class="font-bold text-sm leading-tight whitespace-pre-wrap">
+                                    <?php echo nl2br($planText); ?>
+                                </p>
                             </div>
-                            <p class="font-bold text-sm leading-tight">テストコードのカバレッジを80%以上にする</p>
-                            <div class="text-[10px] text-gray-500 mt-1 font-dot">2024/12/02 - 12/08</div>
+                            <?php endforeach; ?>
                         </div>
-                    </div>
-
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
                 <div class="absolute inset-0 bg-[radial-gradient(#000_2px,transparent_2px)] bg-[size:20px_20px] opacity-10 pointer-events-none z-0"></div>
             </div>

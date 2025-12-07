@@ -28,13 +28,13 @@ $is_logged_in = isset($_SESSION['user_id']);
                         <a href="/plan/" class="px-3 py-2 bg-[#FF69B4] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
                             Plan
                         </a>
-                        <a href="/check/" class="px-3 py-2 bg-[#87CEEB] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
+                        <a href="/check/check.php" class="px-3 py-2 bg-[#87CEEB] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
                             Check
                         </a>
                         <a href="/action/" class="px-3 py-2 bg-[#32CD32] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
                             Action
                         </a>
-                        <a href="/gacha/" class="px-3 py-2 bg-[#9370DB] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
+                        <a href="/gacha/gacha.php" class="px-3 py-2 bg-[#9370DB] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
                             Gacha
                         </a>
                         
