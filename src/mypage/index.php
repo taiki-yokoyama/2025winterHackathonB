@@ -56,8 +56,8 @@ if (empty($user['name'])) {
                     <!-- アイコン -->
                     <div class="flex-shrink-0">
                         <div class="w-32 h-32 md:w-40 md:h-40 border-4 border-black bg-gray-200 flex items-center justify-center overflow-hidden">
-                            <?php if ($user['icon']): ?>
-                                <img src="/assets/img/<?php echo htmlspecialchars($user['icon']); ?>" alt="アイコン" class="w-full h-full object-cover">
+                            <?php if (!empty($user['icon'])): ?>
+                                <img src="/assets/img/gacha_img/<?php echo htmlspecialchars($user['icon']); ?>" alt="アイコン" class="w-full h-full object-cover">
                             <?php else: ?>
                                 <span class="text-6xl">👤</span>
                             <?php endif; ?>
