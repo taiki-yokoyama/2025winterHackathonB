@@ -1,11 +1,18 @@
 <?php
 session_start();
 
+// ログインチェック
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /auth/login.php');
+    exit;
+}
+
 // データベース接続
 require_once __DIR__ . '/../dbconnect.php';
+require_once __DIR__ . '/../evaluation_functions.php';
 
 // 現在のユーザーID
-$current_user_id = $_SESSION['user_id'] ?? 1;
+$current_user_id = $_SESSION['user_id'];
 
 // 現在のユーザー情報を取得
 $stmt = $dbh->prepare('SELECT yokomoku, tatemoku, current_mode FROM users WHERE id = ?');
@@ -14,16 +21,22 @@ $current_user = $stmt->fetch(PDO::FETCH_ASSOC);
 $current_mode = $current_user['current_mode'] ?? 'yokomoku';
 $team_value = $current_mode === 'yokomoku' ? $current_user['yokomoku'] : $current_user['tatemoku'];
 
-// 同じチームのメンバーからの自分宛のActionを取得
-$stmt = $dbh->prepare('
-    SELECT a.*, u.name as from_user_name
-    FROM actions a
-    JOIN users u ON a.from_user_id = u.id
-    WHERE a.to_user_id = ? AND u.' . $current_mode . ' = ?
-    ORDER BY a.created_at DESC
-');
-$stmt->execute([$current_user_id, $team_value]);
-$actions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// 自分宛のAction提案を取得（individual_evaluationsテーブルから）
+$action_proposals = getActionProposalsByTargetUser($dbh, $current_user_id);
+
+// 同じチームのメンバーからの提案のみをフィルタリング
+$filtered_proposals = [];
+foreach ($action_proposals as $proposal) {
+    // 提案者の情報を取得
+    $stmt = $dbh->prepare('SELECT ' . $current_mode . ' FROM users WHERE id = ?');
+    $stmt->execute([$proposal['evaluator_id']]);
+    $evaluator = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // 同じチームの場合のみ追加
+    if ($evaluator && $evaluator[$current_mode] === $team_value) {
+        $filtered_proposals[] = $proposal;
+    }
+}
 
 // アバター色の配列
 $avatar_colors = ['bg-pink-400', 'bg-blue-400', 'bg-green-400', 'bg-purple-400', 'bg-yellow-400', 'bg-red-400'];
@@ -69,35 +82,46 @@ $avatar_colors = ['bg-pink-400', 'bg-blue-400', 'bg-green-400', 'bg-purple-400',
     <h3 class="text-2xl font-black text-gray-800 mb-6 toy-title">あなたへのActionの提案</h3>
     
     <div class="space-y-6">
-        <?php if (empty($actions)): ?>
+        <?php if (empty($filtered_proposals)): ?>
             <div class="bg-white rounded-3xl p-8 border-6 border-gray-300 shadow-[8px_8px_0_#ccc] text-center">
-                <p class="text-gray-500 text-lg font-bold">まだActionがありません 📭</p>
+                <p class="text-gray-500 text-lg font-bold">まだActionの提案がありません 📭</p>
+                <p class="text-gray-400 text-sm mt-2">チームメンバーからの評価を待ちましょう</p>
             </div>
         <?php else: ?>
-            <?php foreach ($actions as $index => $action): ?>
+            <?php foreach ($filtered_proposals as $index => $proposal): ?>
                 <?php 
-                $avatar_color = $avatar_colors[$action['from_user_id'] % count($avatar_colors)];
-                $avatar_initial = mb_substr($action['from_user_name'], 0, 1);
+                $avatar_color = $avatar_colors[$proposal['evaluator_id'] % count($avatar_colors)];
                 ?>
                 <div class="bg-white rounded-3xl p-6 border-6 border-yellow-400 shadow-[8px_8px_0_#000] transform hover:translate-y-1 hover:shadow-[4px_4px_0_#000] transition-all">
                     <div class="flex items-start gap-4">
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 rounded-full border-4 border-black flex items-center justify-center font-black text-xl shadow-lg <?php echo $avatar_color; ?> text-white">
-                                    <?php echo htmlspecialchars($avatar_initial); ?>
-                                </div>
+                                <?php if (!empty($proposal['evaluator_icon'])): ?>
+                                    <div class="w-12 h-12 rounded-full border-4 border-black overflow-hidden shadow-lg">
+                                        <img src="/assets/img/gacha_img/<?php echo htmlspecialchars($proposal['evaluator_icon']); ?>" 
+                                             alt="<?php echo htmlspecialchars($proposal['evaluator_name']); ?>" 
+                                             class="w-full h-full object-cover">
+                                    </div>
+                                <?php else: ?>
+                                    <div class="w-12 h-12 rounded-full border-4 border-black flex items-center justify-center font-black text-xl shadow-lg <?php echo $avatar_color; ?> text-white">
+                                        <?php echo htmlspecialchars(mb_substr($proposal['evaluator_name'], 0, 1)); ?>
+                                    </div>
+                                <?php endif; ?>
                                 <div>
-                                    <h4 class="font-black text-lg text-gray-800"><?php echo htmlspecialchars($action['from_user_name']); ?></h4>
+                                    <h4 class="font-black text-lg text-gray-800"><?php echo htmlspecialchars($proposal['evaluator_name']); ?></h4>
                                     <p class="text-xs text-gray-500 flex items-center">
                                         <i class="fa-regular fa-calendar mr-1"></i> 
-                                        <?php echo date('Y/m/d', strtotime($action['created_at'])); ?>
+                                        <?php echo date('Y/m/d H:i', strtotime($proposal['created_at'])); ?>
                                     </p>
                                 </div>
                             </div>
-                            <div class="bg-yellow-100 rounded-2xl p-4 border-4 border-yellow-300 shadow-inner">
-                                <p class="text-gray-800 font-bold flex items-start gap-2">
-                                    <i class="fa-solid fa-lightbulb text-yellow-600 mt-1"></i> 
-                                    <?php echo nl2br(htmlspecialchars($action['content'])); ?>
+                            <div class="bg-gradient-to-r from-green-100 to-blue-100 rounded-2xl p-5 border-4 border-green-400 shadow-inner">
+                                <div class="flex items-start gap-2 mb-2">
+                                    <i class="fa-solid fa-lightbulb text-yellow-600 text-xl mt-1"></i>
+                                    <span class="text-xs font-black text-green-700 uppercase tracking-wider">次のPlanの提案</span>
+                                </div>
+                                <p class="text-gray-800 font-bold text-lg pl-7">
+                                    <?php echo nl2br(htmlspecialchars($proposal['action_proposal'])); ?>
                                 </p>
                             </div>
                         </div>
