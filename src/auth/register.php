@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // セッションに保存してログイン状態に
                 $_SESSION['user_id'] = $dbh->lastInsertId();
                 $_SESSION['email'] = $email;
-                $_SESSION['coins'] = 0;
+                $_SESSION['coins'] = 3;
                 
                 // マイページにリダイレクト
                 header('Location: /mypage/');

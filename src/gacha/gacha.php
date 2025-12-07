@@ -1,134 +1,176 @@
+<?php
+session_start();
+
+// ログインチェック
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /auth/login.php');
+    exit;
+}
+
+require_once '../dbconnect.php';
+
+$error = '';
+$result_card = null;
+
+// ガチャを引く処理
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['draw_gacha'])) {
+    // ユーザーのコイン数を取得
+    $stmt = $dbh->prepare('SELECT coins FROM users WHERE id = ?');
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($user['coins'] < 1) {
+        $error = 'コインが足りません';
+    } else {
+        try {
+            $dbh->beginTransaction();
+            
+            // コインを1枚減らす
+            $stmt = $dbh->prepare('UPDATE users SET coins = coins - 1 WHERE id = ?');
+            $stmt->execute([$_SESSION['user_id']]);
+            $_SESSION['coins'] = $user['coins'] - 1;
+            
+            // ランダムにカードを選択
+            $stmt = $dbh->query('SELECT * FROM cards ORDER BY RAND() LIMIT 1');
+            $result_card = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // ユーザーのカード所持情報を更新
+            $stmt = $dbh->prepare('
+                INSERT INTO user_cards (user_id, card_id, count, first_obtained_at, last_obtained_at)
+                VALUES (?, ?, 1, NOW(), NOW())
+                ON DUPLICATE KEY UPDATE 
+                    count = count + 1,
+                    last_obtained_at = NOW()
+            ');
+            $stmt->execute([$_SESSION['user_id'], $result_card['id']]);
+            
+            $dbh->commit();
+        } catch (Exception $e) {
+            $dbh->rollBack();
+            $error = 'ガチャの実行に失敗しました';
+        }
+    }
+}
+
+// 現在のコイン数を取得
+$stmt = $dbh->prepare('SELECT coins FROM users WHERE id = ?');
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$coins = $user['coins'];
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ガチャ - ③でPON</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Yomogi&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        /* ハンドルを回すアクション */
-        .turn-handle:active .handle-grip { 
-            transform: rotate(180deg); 
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: linear-gradient(135deg, #FFB6C1 0%, #87CEEB 50%, #98FB98 100%);
+            min-height: 100vh;
+        }
+        .font-heavy { font-family: 'Dela Gothic One', sans-serif; }
+        .toy-box { border: 6px solid #000; box-shadow: 12px 12px 0 #000; }
+        
+        @keyframes cardFlip {
+            0% { transform: rotateY(0deg) scale(0.5); opacity: 0; }
+            50% { transform: rotateY(180deg) scale(1.2); }
+            100% { transform: rotateY(360deg) scale(1); opacity: 1; }
         }
         
-        /* ドーム内のカプセルが暴れるアニメーション */
-        @keyframes rumble {
-            0% { transform: translate(0,0) rotate(0deg); } 
-            25% { transform: translate(-3px, 3px) rotate(-5deg); }
-            50% { transform: translate(3px, -3px) rotate(5deg); } 
-            75% { transform: translate(-3px, -3px) rotate(-5deg); } 
-            100% { transform: translate(0,0) rotate(0deg); }
+        .card-animation {
+            animation: cardFlip 1s ease-out;
         }
-        /* ハンドルを押している間、中身が暴れる */
-        .turn-handle:active ~ .machine-body .dome-contents { 
-            animation: rumble 0.1s infinite; 
+        
+        @keyframes shine {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
-
-        /* 背景の集中線（回転） */
-        @keyframes spin-burst { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-        .sunburst-bg {
-            background: repeating-conic-gradient(#FF00FF 0% 5%, #FFFF00 5% 10%);
-            animation: spin-burst 20s linear infinite;
+        
+        .shine {
+            animation: shine 2s infinite;
         }
     </style>
 </head>
+<body class="p-4 md:p-8">
 
-<body>
     <?php include '../components/header.php'; ?>
-    
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 h-full items-center px-4">
+
+    <div class="max-w-4xl mx-auto mt-12 md:mt-16">
         
-        <div class="relative transform scale-100 lg:scale-110 origin-center mx-auto">
-            
-            <div class="absolute -top-12 -left-8 font-heavy text-4xl text-[#00FFFF] z-40 transform -rotate-12 animate-bounce-slow" style="-webkit-text-stroke: 2px #000; text-shadow: 4px 4px 0 #000;">
-                JACKPOT!!
-            </div>
-
-            <div class="turn-handle absolute top-[260px] left-1/2 transform -translate-x-1/2 z-30 cursor-pointer group w-32 h-32">
-                <div class="handle-grip w-full h-full bg-white rounded-full border-[6px] border-black flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.5)] relative">
-                    <div class="w-8 h-36 bg-[#FF0000] absolute border-4 border-black rounded-full"></div>
-                    <div class="w-16 h-16 bg-[#FFD700] rounded-full border-4 border-black z-10 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-white opacity-40 rounded-full transform -translate-x-1/2 -translate-y-1/2 top-1/4 left-1/4"></div>
-                        <span class="font-heavy text-xs text-black transform rotate-12">TURN</span>
-                    </div>
-                </div>
-                <div class="absolute -right-16 top-0 text-4xl text-[#00FFFF] animate-pulse transform rotate-45" style="-webkit-text-stroke: 1px #000;">
-                    <i class="fa-solid fa-arrow-rotate-left"></i>
-                </div>
-            </div>
-
-            <div class="machine-body relative z-10">
-                <div class="w-64 h-64 bg-blue-100/30 rounded-full border-[8px] border-black relative overflow-hidden shadow-[inset_0_0_40px_rgba(255,255,255,0.8)] mx-auto backdrop-blur-[2px]">
-                    
-                    <div class="absolute top-6 left-6 w-20 h-10 bg-white opacity-80 rounded-full transform -rotate-45 z-20 pointer-events-none"></div>
-                    <div class="absolute bottom-6 right-8 w-10 h-6 bg-white opacity-60 rounded-full transform -rotate-45 z-20 pointer-events-none"></div>
-                    
-                    <div class="dome-contents absolute inset-0 w-full h-full">
-                        <div class="absolute top-16 left-10 w-14 h-14 rounded-full border-4 border-black bg-gradient-to-br from-yellow-300 to-yellow-500 shadow-lg transform rotate-12"></div>
-                        <div class="absolute bottom-16 right-12 w-14 h-14 rounded-full border-4 border-black bg-gradient-to-br from-pink-400 to-pink-600 shadow-lg transform -rotate-45"></div>
-                        <div class="absolute top-24 right-10 w-14 h-14 rounded-full border-4 border-black bg-gradient-to-br from-cyan-300 to-cyan-500 shadow-lg transform rotate-90"></div>
-                        <div class="absolute bottom-10 left-16 w-14 h-14 rounded-full border-4 border-black bg-gradient-to-br from-green-400 to-green-600 shadow-lg z-10"></div>
-                        <div class="absolute top-10 right-20 w-12 h-12 rounded-full border-4 border-black bg-purple-500 shadow-lg -z-10 blur-[1px]"></div>
-                    </div>
-                </div>
-                
-                <div class="w-60 h-60 bg-[#FF0000] mx-auto -mt-20 rounded-b-[4rem] border-[8px] border-black relative z-20 flex flex-col items-center justify-center shadow-[16px_16px_0_#000]">
-                    <div class="absolute top-6 w-full flex justify-between px-2">
-                        <div class="w-3 h-3 bg-black rounded-full border-2 border-gray-500"></div>
-                        <div class="w-3 h-3 bg-black rounded-full border-2 border-gray-500"></div>
-                    </div>
-                    <div class="absolute bottom-24 right-4 bg-yellow-400 text-black font-heavy text-xs px-2 py-1 border-2 border-black transform -rotate-6 shadow-sm">
-                        1 COIN
-                    </div>
-                </div>
-                
-                <div class="w-36 h-20 bg-[#222] mx-auto -mt-6 rounded-t-[1.5rem] border-x-[6px] border-t-[6px] border-black relative overflow-hidden shadow-xl z-10">
-                    <div class="absolute bottom-0 w-full h-4 bg-black"></div>
-                    <div class="absolute top-0 w-full h-full bg-white/10 skew-x-12 border-r-4 border-white/20"></div>
-                </div>
-                
-                <div class="w-48 mx-auto flex justify-between -mt-2">
-                    <div class="w-8 h-8 bg-black rounded-b-lg"></div>
-                    <div class="w-8 h-8 bg-black rounded-b-lg"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="toy-box h-[500px] flex flex-col items-center justify-center relative transform rotate-1 overflow-hidden">
-            
-            <div class="sunburst-bg absolute inset-0 opacity-20 pointer-events-none"></div>
-
-            <div class="z-10 relative text-center w-full">
-                
-                <div class="w-56 h-56 mx-auto mb-8 relative group cursor-pointer transition-transform hover:scale-105 active:scale-95">
-                    <div class="w-full h-1/2 bg-[#00FFFF] rounded-t-full border-8 border-b-4 border-black relative z-10">
-                        <div class="absolute top-4 left-6 w-16 h-8 bg-white opacity-60 rounded-full transform -rotate-45"></div>
-                    </div>
-                    <div class="w-full h-1/2 bg-white rounded-b-full border-8 border-t-4 border-black flex items-center justify-center">
-                        <span class="font-heavy text-6xl opacity-20 select-none">?</span>
-                    </div>
-                    
-                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#FF00FF] text-white font-heavy text-2xl px-6 py-2 border-4 border-black shadow-[4px_4px_0_#000] rotate-[-5deg] group-hover:rotate-0 transition-transform">
-                        OPEN!
-                    </div>
-                </div>
-                
-                <div class="bg-black text-white p-4 border-4 border-white shadow-[8px_8px_0_#000] inline-block transform -rotate-1 max-w-xs">
-                    <h3 class="font-heavy text-2xl text-[#FFFF00] mb-1">ガチャを回せ！</h3>
-                    <p class="font-bold text-sm leading-tight">
-                        ハンドルを<br>おもいっきり<br>回してね！！
-                    </p>
-                </div>
+        <!-- ガチャセクション -->
+        <section class="toy-box p-6 md:p-8 bg-white relative">
+            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-[#9370DB] border-4 border-black px-6 py-2 font-heavy text-xl shadow-[4px_4px_0_#000] rotate-2 z-10 text-white">
+                ガチャガチャ 🎰
             </div>
             
-            <div class="absolute top-2 left-2 text-2xl">➕</div>
-            <div class="absolute top-2 right-2 text-2xl">➕</div>
-            <div class="absolute bottom-2 left-2 text-2xl">➕</div>
-            <div class="absolute bottom-2 right-2 text-2xl">➕</div>
-        </div>
+            <div class="mt-8">
+                <!-- コイン表示 -->
+                <div class="text-center mb-8">
+                    <div class="inline-block toy-box p-4 bg-[#FFD700] transform -rotate-1">
+                        <p class="text-sm font-bold text-gray-700">所持コイン</p>
+                        <p class="text-4xl font-heavy">🪙 <?php echo $coins; ?></p>
+                    </div>
+                </div>
+                
+                <?php if ($error): ?>
+                    <div class="bg-red-100 border-4 border-red-500 text-red-700 px-4 py-3 mb-6 font-bold transform -rotate-1 text-center">
+                        ⚠️ <?php echo htmlspecialchars($error); ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if ($result_card): ?>
+                    <!-- 結果表示 -->
+                    <div class="text-center mb-8 card-animation">
+                        <div class="inline-block toy-box p-6 bg-gradient-to-br from-[#FFD700] to-[#FFA500] relative">
+                            <div class="absolute inset-0 shine bg-white opacity-0"></div>
+                            <p class="text-2xl font-heavy mb-4 text-white [text-shadow:2px_2px_0_#000]">
+                                🎉 おめでとう！ 🎉
+                            </p>
+                            <div class="bg-white border-4 border-black p-4 mb-4">
+                                <img 
+                                    src="/assets/img/gacha_img/<?php echo htmlspecialchars($result_card['image']); ?>" 
+                                    alt="<?php echo htmlspecialchars($result_card['name']); ?>"
+                                    class="w-64 h-auto mx-auto"
+                                >
+                            </div>
+                            <p class="text-xl font-heavy"><?php echo htmlspecialchars($result_card['name']); ?></p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <a href="/cardbook/cardbook.php" class="inline-block bg-[#87CEEB] text-white font-heavy text-lg py-3 px-6 border-4 border-black shadow-[6px_6px_0_#000] hover:translate-y-2 hover:shadow-[3px_3px_0_#000] transition">
+                            カードブックを見る 📖
+                        </a>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- ガチャボタン -->
+                <form method="POST" action="" class="text-center">
+                    <button 
+                        type="submit" 
+                        name="draw_gacha"
+                        <?php echo $coins < 1 ? 'disabled' : ''; ?>
+                        class="bg-[#FF69B4] text-white font-heavy text-2xl md:text-3xl py-6 px-12 border-6 border-black shadow-[12px_12px_0_#000] hover:translate-y-2 hover:shadow-[6px_6px_0_#000] transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        ガチャを引く！<br>
+                        <span class="text-lg">(コイン1枚使用)</span>
+                    </button>
+                </form>
+                
+                <div class="mt-8 text-center text-sm text-gray-600">
+                    <p>※ コインを使ってガチャを引くと、ランダムでメンバーカードが手に入ります</p>
+                    <p>※ 同じカードを引くと、所持枚数が増えます</p>
+                </div>
+            </div>
+        </section>
+        
     </div>
+
+    <?php include '../components/footer.php'; ?>
 
 </body>
 </html>
