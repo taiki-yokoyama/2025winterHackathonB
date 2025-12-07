@@ -46,3 +46,27 @@ INSERT INTO cards (name, image) VALUES
 ('かい', 'kai.JPG'),
 ('てつろう', 'tetsurou.JPG'),
 ('よこ', 'yoko.JPG');
+
+-- サンプルプランデータ
+INSERT INTO plans (user_id, content, start_date, end_date, status, created_at) VALUES
+(2, '毎日30分、ペアプロの時間を設ける', '2024-12-02', '2024-12-08', 'running', NOW()),
+(2, 'レビューのフィードバックを24時間以内に返す', '2024-12-02', '2024-12-08', 'running', NOW()),
+(3, 'テストコードのカバレッジを80%以上にする', '2024-12-02', '2024-12-08', 'running', NOW()),
+(1, 'APIドキュメントを詳しく記述する', '2024-11-25', '2024-12-01', 'completed', '2024-11-25 10:00:00');
+
+-- Actionテーブル
+CREATE TABLE actions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    from_user_id INT NOT NULL,
+    to_user_id INT NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- サンプルActionデータ
+INSERT INTO actions (from_user_id, to_user_id, content, created_at) VALUES
+(2, 1, 'もう少しペアプロの時間を増やせるといいかも', '2024-12-05 10:30:00'),
+(3, 1, 'テストコードをもう少し充実させると完璧です', '2024-12-05 14:20:00'),
+(4, 1, '引き続きこの調子で！レビューのスピードが早くて助かってます', '2024-12-04 16:45:00');
