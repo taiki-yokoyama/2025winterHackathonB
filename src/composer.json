@@ -3,5 +3,9 @@
       "psr-4": {
           "POSSE\\": "./"
       }
+  },
+  "require-dev": {
+      "phpunit/phpunit": "^9.5",
+      "giorgiosironi/eris": "^0.14"
   }
 }
