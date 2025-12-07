@@ -81,18 +81,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="p-4 md:p-8">
     
+    <?php include '../components/header.php'; ?>
+    
     <div class="max-w-md mx-auto">
-        
-        <!-- ヘッダー -->
-        <header class="mb-8 text-center">
-            <a href="/" class="inline-block">
-                <div class="toy-box p-3 bg-[#FFD700] transform -rotate-1 relative hover:rotate-0 transition">
-                    <h1 class="font-heavy text-3xl text-black [text-shadow:2px_2px_0_#fff]">
-                        ③でPON
-                    </h1>
-                </div>
-            </a>
-        </header>
 
         <!-- ログインフォーム -->
         <section class="toy-box p-6 md:p-8 bg-white relative">

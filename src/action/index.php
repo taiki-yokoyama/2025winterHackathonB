@@ -14,6 +14,8 @@
 
 <body>
 
+    <?php include '../components/header.php'; ?>
+
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6 border-4 border-black" style="background: linear-gradient(135deg, #FF6B9D 0%, #FEC163 100%);">
         <div class="flex items-center space-x-3 mb-2">
             <div class="p-3 bg-yellow-300 rounded-full border-4 border-black shadow-[4px_4px_0_#000]">

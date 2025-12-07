@@ -58,6 +58,8 @@
 </head>
 <body class="p-4 md:p-8 min-h-screen text-gray-800">
 
+    <?php include '../components/header.php'; ?>
+
     <div class="max-w-5xl mx-auto relative">
         
         <div class="bg-white border-4 border-black p-4 mb-8 shadow-hard relative z-10">
