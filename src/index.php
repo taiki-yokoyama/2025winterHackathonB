@@ -141,10 +141,10 @@
                 </div>
                 
                 <h2 class="font-heavy text-3xl md:text-5xl text-white mb-6 [text-shadow:4px_4px_0_#000]">
-                    振り返りを<br>楽しく続けよう！
+                    チーム開発の振り返りを<br>ゲーム感覚で！
                 </h2>
                 <p class="text-xl md:text-2xl text-white font-bold mb-8 [text-shadow:2px_2px_0_#000]">
-                    PDCAを回してコインを貯めて<br>ガチャガチャを回そう！
+                    評価し合ってコインを貯めて<br>メンバーカードをコンプリート！
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -175,7 +175,7 @@
                     <div class="text-center">
                         <div class="text-6xl mb-4">📝</div>
                         <h3 class="font-heavy text-2xl mb-4 text-white">Plan<br>計画</h3>
-                        <p class="text-lg font-bold text-white">Actionを踏まえて<br>自分で計画を<br>決める！</p>
+                        <p class="text-lg font-bold text-white">チームの提案を<br>踏まえて<br>次の計画を立てる</p>
                     </div>
                 </div>
 
@@ -187,7 +187,7 @@
                     <div class="text-center">
                         <div class="text-6xl mb-4">🚀</div>
                         <h3 class="font-heavy text-2xl mb-4">Do<br>実行</h3>
-                        <p class="text-lg font-bold">計画を<br>実際に<br>やってみる！</p>
+                        <p class="text-lg font-bold">立てた計画を<br>実際に<br>実行する</p>
                     </div>
                 </div>
 
@@ -199,7 +199,7 @@
                     <div class="text-center">
                         <div class="text-6xl mb-4">👀</div>
                         <h3 class="font-heavy text-2xl mb-4">Check<br>評価</h3>
-                        <p class="text-lg font-bold">数値で<br>評価して<br>振り返る！</p>
+                        <p class="text-lg font-bold">メンバーを<br>コード面・人格面で<br>1〜4で評価</p>
                     </div>
                 </div>
 
@@ -211,7 +211,7 @@
                     <div class="text-center">
                         <div class="text-6xl mb-4">💡</div>
                         <h3 class="font-heavy text-2xl mb-4 text-white">Action<br>改善</h3>
-                        <p class="text-lg font-bold text-white">みんなの意見を<br>見て次の<br>アクションを考える！</p>
+                        <p class="text-lg font-bold text-white">受け取った評価と<br>提案を見て<br>次に活かす</p>
                     </div>
                 </div>
             </div>
@@ -230,19 +230,19 @@
                         📊
                     </div>
                     <div>
-                        <p class="font-bold text-lg md:text-xl font-dot">数値で簡単評価！</p>
-                        <p class="text-sm mt-1">言葉にできなくても大丈夫</p>
+                        <p class="font-bold text-lg md:text-xl font-dot">1〜4の数値評価</p>
+                        <p class="text-sm mt-1">コード面と人格面を簡単に評価</p>
                     </div>
                 </div>
 
                 <div class="bg-white border-4 border-black p-4 flex items-center gap-4 shadow-[6px_6px_0_#FFFF00] transform rotate-2 hover:rotate-0 transition relative">
                     <div class="absolute -top-3 -right-3 w-8 h-8 bg-blue-500 rounded-full border-4 border-black"></div>
                     <div class="w-16 h-16 bg-blue-500 text-white flex items-center justify-center font-heavy text-3xl border-4 border-black rounded-full flex-shrink-0">
-                        🎮
+                        🎴
                     </div>
                     <div>
-                        <p class="font-bold text-lg md:text-xl font-dot">ゲーム感覚で楽しい！</p>
-                        <p class="text-sm mt-1">コインを貯めてガチャを回そう</p>
+                        <p class="font-bold text-lg md:text-xl font-dot">メンバーカード収集</p>
+                        <p class="text-sm mt-1">ガチャでカードを集めよう</p>
                     </div>
                 </div>
 
@@ -252,19 +252,19 @@
                         👥
                     </div>
                     <div>
-                        <p class="font-bold text-lg md:text-xl font-dot">チームの状況が見える！</p>
-                        <p class="text-sm mt-1">みんなの意見を確認できる</p>
+                        <p class="font-bold text-lg md:text-xl font-dot">横もく・縦もく対応</p>
+                        <p class="text-sm mt-1">チームを切り替えて使える</p>
                     </div>
                 </div>
 
                 <div class="bg-white border-4 border-black p-4 flex items-center gap-4 shadow-[6px_6px_0_#FF69B4] transform -rotate-1 hover:rotate-0 transition relative">
                     <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-500 rounded-full border-4 border-black"></div>
                     <div class="w-16 h-16 bg-purple-500 text-white flex items-center justify-center font-heavy text-3xl border-4 border-black rounded-full flex-shrink-0">
-                        🔄
+                        💬
                     </div>
                     <div>
-                        <p class="font-bold text-lg md:text-xl font-dot">継続しやすい仕組み！</p>
-                        <p class="text-sm mt-1">形だけにならない振り返り</p>
+                        <p class="font-bold text-lg md:text-xl font-dot">次のPlan提案機能</p>
+                        <p class="text-sm mt-1">評価と一緒に改善案を送れる</p>
                     </div>
                 </div>
             </div>
@@ -282,28 +282,40 @@
                 <div class="bg-white border-4 border-black p-4 shadow-[4px_4px_0_#000] transform hover:translate-x-2 transition">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-[#FF69B4] border-4 border-black rounded-full flex items-center justify-center font-heavy text-2xl flex-shrink-0">1</div>
-                        <p class="font-bold text-lg md:text-xl">毎日PDCAを記録する</p>
+                        <div>
+                            <p class="font-bold text-lg md:text-xl">Planで次の目標を立てる</p>
+                            <p class="text-sm text-gray-600">自分とチームの計画を管理</p>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="bg-white border-4 border-black p-4 shadow-[4px_4px_0_#000] transform hover:translate-x-2 transition">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-[#87CEEB] border-4 border-black rounded-full flex items-center justify-center font-heavy text-2xl flex-shrink-0">2</div>
-                        <p class="font-bold text-lg md:text-xl">記録するとコインがもらえる</p>
+                        <div>
+                            <p class="font-bold text-lg md:text-xl">Checkでメンバーを評価</p>
+                            <p class="text-sm text-gray-600">コード面・人格面を1〜4で評価</p>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="bg-white border-4 border-black p-4 shadow-[4px_4px_0_#000] transform hover:translate-x-2 transition">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-[#32CD32] border-4 border-black rounded-full flex items-center justify-center font-heavy text-2xl flex-shrink-0">3</div>
-                        <p class="font-bold text-lg md:text-xl">コインでガチャを回す</p>
+                        <div>
+                            <p class="font-bold text-lg md:text-xl">Actionで提案を確認</p>
+                            <p class="text-sm text-gray-600">チームからの改善提案を見る</p>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="bg-white border-4 border-black p-4 shadow-[4px_4px_0_#000] transform hover:translate-x-2 transition">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-[#FFD700] border-4 border-black rounded-full flex items-center justify-center font-heavy text-2xl flex-shrink-0">4</div>
-                        <p class="font-bold text-lg md:text-xl">メンバーのカードを集めよう！</p>
+                        <div>
+                            <p class="font-bold text-lg md:text-xl">Gachaでカードを集める</p>
+                            <p class="text-sm text-gray-600">コインを使ってメンバーカードをゲット</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -316,7 +328,7 @@
                 さあ、はじめよう！
             </h2>
             <p class="text-xl md:text-2xl text-white font-bold mb-8 [text-shadow:2px_2px_0_#000]">
-                チーム開発をもっと楽しく！
+                評価し合って成長する<br>新しいチーム開発体験
             </p>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
