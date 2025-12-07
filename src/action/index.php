@@ -4,18 +4,25 @@ session_start();
 // データベース接続
 require_once __DIR__ . '/../dbconnect.php';
 
-// 現在のユーザーID（仮で1を使用、本来はセッションから取得）
+// 現在のユーザーID
 $current_user_id = $_SESSION['user_id'] ?? 1;
 
-// 自分宛のActionを取得
+// 現在のユーザー情報を取得
+$stmt = $dbh->prepare('SELECT yokomoku, tatemoku, current_mode FROM users WHERE id = ?');
+$stmt->execute([$current_user_id]);
+$current_user = $stmt->fetch(PDO::FETCH_ASSOC);
+$current_mode = $current_user['current_mode'] ?? 'yokomoku';
+$team_value = $current_mode === 'yokomoku' ? $current_user['yokomoku'] : $current_user['tatemoku'];
+
+// 同じチームのメンバーからの自分宛のActionを取得
 $stmt = $dbh->prepare('
     SELECT a.*, u.name as from_user_name
     FROM actions a
     JOIN users u ON a.from_user_id = u.id
-    WHERE a.to_user_id = ?
+    WHERE a.to_user_id = ? AND u.' . $current_mode . ' = ?
     ORDER BY a.created_at DESC
 ');
-$stmt->execute([$current_user_id]);
+$stmt->execute([$current_user_id, $team_value]);
 $actions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // アバター色の配列

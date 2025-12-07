@@ -331,7 +331,7 @@ function getAvatarInitial($name) {
         </div>
 
         <div class="text-center pb-12">
-            <a href="action.php" class="inline-flex flex-col items-center group">
+            <a href="/action/index.php" class="inline-flex flex-col items-center group">
                 <div class="relative">
                     <button class="bg-[#00FFFF] border-4 border-black px-12 py-4 rounded-full font-pop text-2xl shadow-hard group-hover:translate-y-1 group-hover:shadow-none transition-all duration-200 relative overflow-hidden">
                         <span class="relative z-10 text-black">Actionを決める！</span>

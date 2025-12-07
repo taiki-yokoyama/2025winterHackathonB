@@ -370,13 +370,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     <div class="max-w-5xl mx-auto relative">
         
+        <?php
+        // 現在のユーザー情報を取得
+        $currentUserId = $_SESSION['user_id'] ?? 0;
+        $stmt = $dbh->prepare('SELECT yokomoku, tatemoku, current_mode FROM users WHERE id = ?');
+        $stmt->execute([$currentUserId]);
+        $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
+        $currentMode = $currentUser['current_mode'] ?? 'yokomoku';
+        $teamValue = $currentMode === 'yokomoku' ? $currentUser['yokomoku'] : $currentUser['tatemoku'];
+        
+        // 同じチームのメンバーを取得
+        $stmt = $dbh->prepare('SELECT id, name, icon, generation, yokomoku, tatemoku FROM users WHERE id != ? AND ' . $currentMode . ' = ? ORDER BY name');
+        $stmt->execute([$currentUserId, $teamValue]);
+        $teamMembers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        ?>
+        
         <div class="bg-white border-4 border-black p-4 mb-8 shadow-hard relative z-10">
-            <h2 class="font-bold text-sm mb-3 bg-gray-200 inline-block px-3 py-1 border-2 border-black rounded">メンバー一覧</h2>
+            <h2 class="font-bold text-sm mb-3 bg-gray-200 inline-block px-3 py-1 border-2 border-black rounded">メンバー一覧（<?php echo htmlspecialchars($teamValue); ?>）</h2>
             <div class="flex justify-start gap-4 items-center overflow-x-auto pb-2">
-                <?php $members = ['ゆ', 'え', 'ま', 'ぼ', 'た', 'く']; ?>
-                <?php foreach($members as $m): ?>
-                <div class="w-14 h-14 rounded-full border-4 border-black bg-gray-100 flex items-center justify-center font-black text-xl shadow-sm flex-shrink-0">
-                    <?php echo $m; ?>
+                <?php foreach($teamMembers as $member): ?>
+                <div onclick="openMemberModal(<?php echo $member['id']; ?>, '<?php echo htmlspecialchars($member['name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['icon'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['generation'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['yokomoku'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['tatemoku'], ENT_QUOTES); ?>')" class="w-14 h-14 rounded-full border-4 border-black bg-white overflow-hidden shadow-sm flex-shrink-0 cursor-pointer hover:scale-110 transition-transform" title="<?php echo htmlspecialchars($member['name']); ?>">
+                    <img src="/assets/img/gacha_img/<?php echo htmlspecialchars($member['icon']); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" class="w-full h-full object-cover">
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -440,11 +454,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         <label class="font-bold text-lg block mb-4 border-l-4 border-black pl-3">誰に対して送信する？</label>
                         <div class="flex flex-wrap gap-6">
                             <?php 
-                            // データベースから全ユーザーを取得（現在のユーザー以外）
-                            $currentUserId = $_SESSION['user_id'] ?? 0;
-                            $stmt = $dbh->prepare('SELECT id, name, icon FROM users WHERE id != ? ORDER BY id');
-                            $stmt->execute([$currentUserId]);
-                            $availableUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            // 同じチームのメンバーを取得（既に上で取得済み）
+                            $availableUsers = $teamMembers;
                             
                             $colors = ['bg-pink-400', 'bg-blue-400', 'bg-green-400', 'bg-purple-400', 'bg-yellow-400', 'bg-red-400'];
                             
@@ -1088,6 +1099,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         evaluationSubmitBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-3"></i>送 信';
                     }
                 });
+            }
+        });
+    </script>
+
+    <!-- メンバープロフィールモーダル -->
+    <div id="memberModal" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50" onclick="closeMemberModal()">
+        <div class="bg-white border-6 border-black p-6 shadow-[12px_12px_0_#000] relative max-w-md mx-4" onclick="event.stopPropagation()">
+            <button onclick="closeMemberModal()" class="absolute -top-4 -right-4 w-12 h-12 bg-red-500 text-white rounded-full border-4 border-black shadow-[4px_4px_0_#000] hover:bg-red-600 font-heavy text-2xl">
+                ×
+            </button>
+            
+            <div class="flex flex-col items-center">
+                <div class="w-32 h-32 rounded-full border-4 border-black overflow-hidden mb-4 shadow-hard">
+                    <img id="modalIcon" src="" alt="" class="w-full h-full object-cover">
+                </div>
+                
+                <h3 id="modalName" class="text-2xl font-heavy mb-4 text-gray-800"></h3>
+                
+                <div class="w-full space-y-3">
+                    <div class="bg-yellow-100 border-4 border-black p-3">
+                        <p class="text-sm font-bold text-gray-600 mb-1">期生</p>
+                        <p class="text-xl font-heavy" id="modalGeneration"></p>
+                    </div>
+                    
+                    <div class="bg-pink-100 border-4 border-black p-3">
+                        <p class="text-sm font-bold text-gray-600 mb-1">横もく</p>
+                        <p class="text-lg font-bold" id="modalYokomoku"></p>
+                    </div>
+                    
+                    <div class="bg-purple-100 border-4 border-black p-3">
+                        <p class="text-sm font-bold text-gray-600 mb-1">縦もく</p>
+                        <p class="text-lg font-bold" id="modalTatemoku"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openMemberModal(id, name, icon, generation, yokomoku, tatemoku) {
+            document.getElementById('modalIcon').src = '/assets/img/gacha_img/' + icon;
+            document.getElementById('modalIcon').alt = name;
+            document.getElementById('modalName').textContent = name;
+            document.getElementById('modalGeneration').textContent = generation + '期生';
+            document.getElementById('modalYokomoku').textContent = yokomoku;
+            document.getElementById('modalTatemoku').textContent = tatemoku;
+            document.getElementById('memberModal').classList.remove('hidden');
+            document.getElementById('memberModal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMemberModal() {
+            document.getElementById('memberModal').classList.add('hidden');
+            document.getElementById('memberModal').classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        // ESCキーでモーダルを閉じる
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeMemberModal();
             }
         });
     </script>
