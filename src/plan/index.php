@@ -144,6 +144,16 @@ function getToySubNav($current, $target, $label, $color) {
             </div>
         <?php endif; ?>
 
+        <?php if ($errorMessage): ?>
+            <!-- エラーメッセージ表示（要件 9.4） -->
+            <div class="bg-red-100 border-4 border-red-500 p-4 rounded-lg shadow-[4px_4px_0_#000] mb-6">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-exclamation-triangle text-2xl text-red-500 mr-3"></i>
+                    <p class="text-red-700 font-bold"><?php echo escapeHtml($errorMessage); ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <div class="flex gap-4 mb-6">
             <a href="?sub=create" class="<?php echo getToySubNav($sub, 'create', '作成', 'pink'); ?>">
                 <i class="fa-solid fa-pen-nib mr-1"></i> MAKE
