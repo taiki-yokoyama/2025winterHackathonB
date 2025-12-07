@@ -107,13 +107,49 @@ INSERT INTO users (id, email, password, name, generation, icon, yokomoku, tatemo
 (3, 'user3@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ユーザー3', '5.5', NULL, '横もくC', '縦もくC', 3, NOW()),
 (4, 'user4@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ユーザー4', '6.5', NULL, '横もくD', '縦もくD', 3, NOW());
 
--- サンプルカードデータ（5枚）
+-- カードデータ
 INSERT INTO cards (name, image) VALUES
+('UT', 'UT.jpg'),
+('あかぎ', 'akagi.jpg'),
+('あかり', 'akari.jpg'),
+('あおい', 'aoi.jpg'),
 ('だいぼう', 'daibou.jpeg'),
+('だいち', 'daichi.jpg'),
 ('えび', 'ebi.JPG'),
+('ギャラドス', 'gyaradosu.jpg'),
+('はると', 'haruto.jpg'),
+('ひなり', 'hinari.jpg'),
+('かほこ', 'kahoko.jpg'),
 ('かい', 'kai.JPG'),
+('かの', 'kano.jpg'),
+('これちか', 'korechika.jpg'),
+('ことね', 'kotone.jpg'),
+('こつこ', 'kotuko.jpg'),
+('こういちろう', 'kouichirou.jpg'),
+('こうき', 'kouki.png'),
+('こうしろう', 'koushirou.jpg'),
+('まほ', 'maho.jpg'),
+('まゆ', 'mayu.jpg'),
+('みづき', 'miduki.jpg'),
+('みきゆう', 'mikiyuu.jpg'),
+('もりん', 'morin.jpg'),
+('おにいちゃん', 'oniichan.jpg'),
+('ぱなえ', 'panae.jpg'),
+('ぴま', 'pima.jpg'),
+('りん', 'rin.jpg'),
+('さつき', 'satsuki.jpg'),
+('しまむー', 'shimamu-.jpg'),
+('しゅう', 'shu.jpg'),
+('しょうこん', 'syoukon.jpg'),
+('たからだ', 'takarada.jpg'),
 ('てつろう', 'tetsurou.JPG'),
-('よこ', 'yoko.JPG');
+('つぼ', 'tubo.jpg'),
+('よこ', 'yoko.JPG'),
+('よなみね', 'yonamine.JPG'),
+('ゆいな', 'yuina.jpg'),
+('ゆりな', 'yurina.jpg'),
+('ゆうき', 'yuuki.jpg'),
+('ちゃんり', 'tyannri.jpg');
 
 -- サンプルプランデータ
 INSERT INTO plans (user_id, content, start_date, end_date, status, created_at) VALUES

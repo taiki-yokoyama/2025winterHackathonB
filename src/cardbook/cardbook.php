@@ -57,6 +57,38 @@ $collection_rate = $total_cards > 0 ? ($obtained_cards / $total_cards) * 100 : 0
         .shadow-hard-sm { box-shadow: 3px 3px 0 #000; }
         .inset-deep { box-shadow: inset 3px 3px 8px rgba(0,0,0,0.15), inset -1px -1px 2px rgba(255,255,255,0.5); }
         .inset-highlight { box-shadow: inset 2px 2px 4px rgba(255,255,255,0.9), inset -2px -2px 4px rgba(0,0,0,0.1); }
+        
+        /* モーダル */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            animation: fadeIn 0.3s;
+        }
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            animation: zoomIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.5); }
+            to { transform: scale(1); }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -112,7 +144,7 @@ $collection_rate = $total_cards > 0 ? ($obtained_cards / $total_cards) * 100 : 0
                     <?php foreach ($all_cards as $card): ?>
                         <?php if (isset($user_card_map[$card['id']])): ?>
                             <!-- 所持しているカード -->
-                            <div class="aspect-square bg-white border-4 border-black rounded-lg relative shadow-hard group cursor-pointer transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_#000]">
+                            <div onclick="openModal('<?php echo htmlspecialchars($card['image']); ?>', '<?php echo htmlspecialchars($card['name']); ?>', <?php echo $user_card_map[$card['id']]['count']; ?>, '<?php echo date('Y/m/d', strtotime($user_card_map[$card['id']]['first_obtained_at'])); ?>')" class="aspect-square bg-white border-4 border-black rounded-lg relative shadow-hard group cursor-pointer transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_#000]">
                                 <img src="/assets/img/gacha_img/<?php echo htmlspecialchars($card['image']); ?>" alt="<?php echo htmlspecialchars($card['name']); ?>" class="w-full h-full object-cover rounded-sm">
                                 <div class="absolute -bottom-3 -right-2 bg-[#67e8f9] border-2 border-black px-3 py-1 shadow-sm transform rotate-2 group-hover:rotate-0 transition-transform">
                                     <div class="font-pop text-sm text-black"><?php echo htmlspecialchars($card['name']); ?></div>
@@ -143,6 +175,66 @@ $collection_rate = $total_cards > 0 ? ($obtained_cards / $total_cards) * 100 : 0
     </div>
 
     <?php include '../components/footer.php'; ?>
+
+    <!-- モーダル -->
+    <div id="cardModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="bg-white border-6 border-black p-6 shadow-[12px_12px_0_#000] relative max-w-2xl">
+                <button onclick="closeModal()" class="absolute -top-4 -right-4 w-12 h-12 bg-red-500 text-white rounded-full border-4 border-black shadow-[4px_4px_0_#000] hover:bg-red-600 font-heavy text-2xl">
+                    ×
+                </button>
+                
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-shrink-0">
+                        <img id="modalImage" src="" alt="" class="w-full md:w-64 h-auto border-4 border-black shadow-hard">
+                    </div>
+                    
+                    <div class="flex-1">
+                        <h3 id="modalName" class="text-3xl font-heavy mb-4 text-gray-800"></h3>
+                        
+                        <div class="space-y-3">
+                            <div class="bg-yellow-100 border-4 border-black p-3">
+                                <p class="text-sm font-bold text-gray-600 mb-1">所持枚数</p>
+                                <p class="text-2xl font-heavy">×<span id="modalCount"></span></p>
+                            </div>
+                            
+                            <div class="bg-blue-100 border-4 border-black p-3">
+                                <p class="text-sm font-bold text-gray-600 mb-1">初回獲得日</p>
+                                <p class="text-xl font-bold">
+                                    <i class="fa-regular fa-calendar mr-2"></i>
+                                    <span id="modalDate"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(image, name, count, date) {
+            document.getElementById('modalImage').src = '/assets/img/gacha_img/' + image;
+            document.getElementById('modalImage').alt = name;
+            document.getElementById('modalName').textContent = name;
+            document.getElementById('modalCount').textContent = count;
+            document.getElementById('modalDate').textContent = date;
+            document.getElementById('cardModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('cardModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // ESCキーでモーダルを閉じる
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 
 </body>
 </html>
