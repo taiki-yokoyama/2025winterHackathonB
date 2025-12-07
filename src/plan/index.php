@@ -77,8 +77,18 @@ if ($sub === 'my') {
 
 // チームのPlan取得
 if ($sub === 'team') {
-    $query = 'SELECT p.*, u.name as user_name FROM plans p JOIN users u ON p.user_id = u.id WHERE p.user_id != ?';
-    $params = [$user_id];
+    // 現在のユーザー情報を取得
+    $stmt = $dbh->prepare('SELECT yokomoku, tatemoku, current_mode FROM users WHERE id = ?');
+    $stmt->execute([$user_id]);
+    $current_user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $current_mode = $current_user['current_mode'] ?? 'yokomoku';
+    $team_value = $current_mode === 'yokomoku' ? $current_user['yokomoku'] : $current_user['tatemoku'];
+    
+    // 同じチームのメンバーのPlanを取得
+    $query = 'SELECT p.*, u.name as user_name FROM plans p 
+              JOIN users u ON p.user_id = u.id 
+              WHERE p.user_id != ? AND u.' . $current_mode . ' = ?';
+    $params = [$user_id, $team_value];
     
     if ($member_filter > 0) {
         $query .= ' AND p.user_id = ?';
@@ -90,9 +100,9 @@ if ($sub === 'team') {
     $stmt->execute($params);
     $team_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // チームメンバー取得
-    $stmt = $dbh->prepare('SELECT id, name FROM users WHERE id != ? ORDER BY name');
-    $stmt->execute([$user_id]);
+    // 同じチームのメンバーを取得
+    $stmt = $dbh->prepare('SELECT id, name, icon, generation, yokomoku, tatemoku FROM users WHERE id != ? AND ' . $current_mode . ' = ? ORDER BY name');
+    $stmt->execute([$user_id, $team_value]);
     $team_members = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -141,16 +151,6 @@ function getToySubNav($current, $target, $label, $color) {
         <?php if ($error): ?>
             <div class="bg-red-100 border-4 border-red-500 text-red-700 px-4 py-3 mb-6 font-bold transform -rotate-1 text-center">
                 ⚠️ <?php echo htmlspecialchars($error); ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if ($errorMessage): ?>
-            <!-- エラーメッセージ表示（要件 9.4） -->
-            <div class="bg-red-100 border-4 border-red-500 p-4 rounded-lg shadow-[4px_4px_0_#000] mb-6">
-                <div class="flex items-center">
-                    <i class="fa-solid fa-exclamation-triangle text-2xl text-red-500 mr-3"></i>
-                    <p class="text-red-700 font-bold"><?php echo escapeHtml($errorMessage); ?></p>
-                </div>
             </div>
         <?php endif; ?>
 
@@ -268,8 +268,8 @@ function getToySubNav($current, $target, $label, $color) {
                 <div class="flex justify-center flex-wrap gap-3">
                     <a href="?sub=team&member=0" class="w-10 h-10 rounded-full <?php echo $member_filter === 0 ? 'bg-blue-500' : 'bg-gray-300'; ?> text-white font-heavy border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000] flex items-center justify-center">全</a>
                     <?php foreach ($team_members as $member): ?>
-                        <a href="?sub=team&member=<?php echo $member['id']; ?>" class="w-10 h-10 rounded-full <?php echo $member_filter === $member['id'] ? 'bg-pink-400' : 'bg-gray-300'; ?> text-white font-heavy border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000] flex items-center justify-center text-xs" title="<?php echo htmlspecialchars($member['name']); ?>">
-                            <?php echo mb_substr($member['name'], 0, 1); ?>
+                        <a href="?sub=team&member=<?php echo $member['id']; ?>" class="w-10 h-10 rounded-full border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000] overflow-hidden <?php echo $member_filter === $member['id'] ? 'ring-4 ring-pink-400' : ''; ?>" title="<?php echo htmlspecialchars($member['name']); ?>">
+                            <img src="/assets/img/gacha_img/<?php echo htmlspecialchars($member['icon']); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" class="w-full h-full object-cover">
                         </a>
                     <?php endforeach; ?>
                 </div>
