@@ -25,13 +25,13 @@ $is_logged_in = isset($_SESSION['user_id']);
                 <nav class="flex flex-wrap items-center justify-center gap-2">
                     <?php if ($is_logged_in): ?>
                         <!-- ログイン済み -->
-                        <a href="/plan/" class="px-3 py-2 bg-[#FF69B4] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
+                        <a href="/plan/index.php" class="px-3 py-2 bg-[#FF69B4] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
                             Plan
                         </a>
                         <a href="/check/check.php" class="px-3 py-2 bg-[#87CEEB] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
                             Check
                         </a>
-                        <a href="/action/" class="px-3 py-2 bg-[#32CD32] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
+                        <a href="/action/index.php" class="px-3 py-2 bg-[#32CD32] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
                             Action
                         </a>
                         <a href="/gacha/gacha.php" class="px-3 py-2 bg-[#9370DB] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
@@ -44,7 +44,7 @@ $is_logged_in = isset($_SESSION['user_id']);
                         </div>
                         
                         <!-- マイページ -->
-                        <a href="/mypage/" class="px-3 py-2 bg-[#FFB6C1] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
+                        <a href="/mypage/index.php" class="px-3 py-2 bg-[#FFB6C1] text-white font-bold border-4 border-black shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-[2px_2px_0_#000] transition">
                             👤 マイページ
                         </a>
                         

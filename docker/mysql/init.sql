@@ -13,7 +13,7 @@ CREATE TABLE users (
     icon VARCHAR(255),
     yokomoku VARCHAR(50),
     tatemoku VARCHAR(50),
-    coins INT DEFAULT 0,
+    coins INT DEFAULT 3,
     created_at DATETIME NOT NULL,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -55,3 +55,75 @@ CREATE TABLE individual_evaluations (
     INDEX idx_target_user (target_user_id, created_at),
     INDEX idx_evaluator (evaluator_id, created_at)
 );
+-- カードテーブル
+CREATE TABLE cards (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    image VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ユーザーカード所持テーブル
+CREATE TABLE user_cards (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    card_id INT NOT NULL,
+    count INT DEFAULT 1,
+    first_obtained_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_obtained_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_card (user_id, card_id)
+);
+
+-- Planテーブル
+CREATE TABLE plans (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    content TEXT NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    status ENUM('running', 'completed', 'cancelled') DEFAULT 'running',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Actionテーブル
+CREATE TABLE actions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    from_user_id INT NOT NULL,
+    to_user_id INT NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- サンプルユーザーデータ
+INSERT INTO users (id, email, password, name, generation, icon, yokomoku, tatemoku, coins, created_at) VALUES
+(1, 'user1@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ユーザー1', '6', NULL, '横もくA', '縦もくA', 3, NOW()),
+(2, 'user2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ユーザー2', '6', NULL, '横もくB', '縦もくB', 3, NOW()),
+(3, 'user3@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ユーザー3', '5.5', NULL, '横もくC', '縦もくC', 3, NOW()),
+(4, 'user4@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ユーザー4', '6.5', NULL, '横もくD', '縦もくD', 3, NOW());
+
+-- サンプルカードデータ（5枚）
+INSERT INTO cards (name, image) VALUES
+('だいぼう', 'daibou.jpeg'),
+('えび', 'ebi.JPG'),
+('かい', 'kai.JPG'),
+('てつろう', 'tetsurou.JPG'),
+('よこ', 'yoko.JPG');
+
+-- サンプルプランデータ
+INSERT INTO plans (user_id, content, start_date, end_date, status, created_at) VALUES
+(2, '毎日30分、ペアプロの時間を設ける', '2024-12-02', '2024-12-08', 'running', NOW()),
+(2, 'レビューのフィードバックを24時間以内に返す', '2024-12-02', '2024-12-08', 'running', NOW()),
+(3, 'テストコードのカバレッジを80%以上にする', '2024-12-02', '2024-12-08', 'running', NOW()),
+(1, 'APIドキュメントを詳しく記述する', '2024-11-25', '2024-12-01', 'completed', '2024-11-25 10:00:00');
+
+-- サンプルActionデータ
+INSERT INTO actions (from_user_id, to_user_id, content, created_at) VALUES
+(2, 1, 'もう少しペアプロの時間を増やせるといいかも', '2024-12-05 10:30:00'),
+(3, 1, 'テストコードをもう少し充実させると完璧です', '2024-12-05 14:20:00'),
+(4, 1, '引き続きこの調子で！レビューのスピードが早くて助かってます', '2024-12-04 16:45:00');
