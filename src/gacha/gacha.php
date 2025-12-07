@@ -108,6 +108,11 @@ $coins = $user['coins'];
             </div>
             
             <div class="mt-8">
+                <!-- ガチャ画像 -->
+                <div class="text-center mb-6">
+                    <img src="/assets/img/gacha.png" alt="ガチャガチャ" class="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 mx-auto object-contain">
+                </div>
+                
                 <!-- コイン表示 -->
                 <div class="text-center mb-8">
                     <div class="inline-block toy-box p-4 bg-[#FFD700] transform -rotate-1">

@@ -268,8 +268,12 @@ function getToySubNav($current, $target, $label, $color) {
                 <div class="flex justify-center flex-wrap gap-3">
                     <a href="?sub=team&member=0" class="w-10 h-10 rounded-full <?php echo $member_filter === 0 ? 'bg-blue-500' : 'bg-gray-300'; ?> text-white font-heavy border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000] flex items-center justify-center">全</a>
                     <?php foreach ($team_members as $member): ?>
-                        <a href="?sub=team&member=<?php echo $member['id']; ?>" class="w-10 h-10 rounded-full border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000] overflow-hidden <?php echo $member_filter === $member['id'] ? 'ring-4 ring-pink-400' : ''; ?>" title="<?php echo htmlspecialchars($member['name']); ?>">
-                            <img src="/assets/img/gacha_img/<?php echo htmlspecialchars($member['icon']); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" class="w-full h-full object-cover">
+                        <a href="?sub=team&member=<?php echo $member['id']; ?>" class="w-10 h-10 rounded-full border-2 border-black hover:scale-110 transition shadow-[2px_2px_0_#000] overflow-hidden bg-gray-200 flex items-center justify-center <?php echo $member_filter === $member['id'] ? 'ring-4 ring-pink-400' : ''; ?>" title="<?php echo htmlspecialchars($member['name']); ?>">
+                            <?php if (!empty($member['icon'])): ?>
+                                <img src="/assets/img/gacha_img/<?php echo htmlspecialchars($member['icon']); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" class="w-full h-full object-cover">
+                            <?php else: ?>
+                                <span class="text-xl">👤</span>
+                            <?php endif; ?>
                         </a>
                     <?php endforeach; ?>
                 </div>
