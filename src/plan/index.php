@@ -14,19 +14,32 @@ function getToySubNav($current, $target, $label, $color) {
 }
 ?>
 
-<div class="h-full flex flex-col">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Yomogi&display=swap" rel="stylesheet">
+</head>
 
-    <div class="flex gap-4 mb-6 px-2">
-        <a href="?page=plan&sub=create" class="<?php echo getToySubNav($sub, 'create', '作成', 'pink'); ?>">
-            <i class="fa-solid fa-pen-nib mr-1"></i> MAKE
-        </a>
-        <a href="?page=plan&sub=my" class="<?php echo getToySubNav($sub, 'my', '自分', 'yellow'); ?>">
-            <i class="fa-solid fa-user mr-1"></i> MINE
-        </a>
-        <a href="?page=plan&sub=team" class="<?php echo getToySubNav($sub, 'team', 'みんな', 'blue'); ?>">
-            <i class="fa-solid fa-users mr-1"></i> TEAM
-        </a>
-    </div>
+<body>
+    <?php include '../components/header.php'; ?>
+    
+    <div class="h-full flex flex-col px-4">
+
+        <div class="flex gap-4 mb-6">
+            <a href="?page=plan&sub=create" class="<?php echo getToySubNav($sub, 'create', '作成', 'pink'); ?>">
+                <i class="fa-solid fa-pen-nib mr-1"></i> MAKE
+            </a>
+            <a href="?page=plan&sub=my" class="<?php echo getToySubNav($sub, 'my', '自分', 'yellow'); ?>">
+                <i class="fa-solid fa-user mr-1"></i> MINE
+            </a>
+            <a href="?page=plan&sub=team" class="<?php echo getToySubNav($sub, 'team', 'みんな', 'blue'); ?>">
+                <i class="fa-solid fa-users mr-1"></i> TEAM
+            </a>
+        </div>
 
     <div class="flex-grow">
         
