@@ -3,7 +3,7 @@ session_start();
 
 // 既にログイン済みの場合はリダイレクト
 if (isset($_SESSION['user_id'])) {
-    header('Location: /plan/');
+    header('Location: /mypage/index.php');
     exit;
 }
 
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['coins'] = 3;
                 
                 // マイページにリダイレクト
-                header('Location: /mypage/');
+                header('Location: /mypage/index.php');
                 exit;
             }
         } catch (PDOException $e) {
