@@ -389,8 +389,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             <h2 class="font-bold text-sm mb-3 bg-gray-200 inline-block px-3 py-1 border-2 border-black rounded">メンバー一覧（<?php echo htmlspecialchars($teamValue); ?>）</h2>
             <div class="flex justify-start gap-4 items-center overflow-x-auto pb-2">
                 <?php foreach($teamMembers as $member): ?>
-                <div onclick="openMemberModal(<?php echo $member['id']; ?>, '<?php echo htmlspecialchars($member['name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['icon'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['generation'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['yokomoku'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['tatemoku'], ENT_QUOTES); ?>')" class="w-14 h-14 rounded-full border-4 border-black bg-white overflow-hidden shadow-sm flex-shrink-0 cursor-pointer hover:scale-110 transition-transform" title="<?php echo htmlspecialchars($member['name']); ?>">
-                    <img src="/assets/img/gacha_img/<?php echo htmlspecialchars($member['icon']); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" class="w-full h-full object-cover">
+                <div onclick="openMemberModal(<?php echo $member['id']; ?>, '<?php echo htmlspecialchars($member['name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['icon'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['generation'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['yokomoku'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($member['tatemoku'], ENT_QUOTES); ?>')" class="w-14 h-14 rounded-full border-4 border-black bg-gray-200 overflow-hidden shadow-sm flex-shrink-0 cursor-pointer hover:scale-110 transition-transform flex items-center justify-center" title="<?php echo htmlspecialchars($member['name']); ?>">
+                    <?php if (!empty($member['icon'])): ?>
+                        <img src="/assets/img/gacha_img/<?php echo htmlspecialchars($member['icon']); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" class="w-full h-full object-cover">
+                    <?php else: ?>
+                        <span class="text-3xl">👤</span>
+                    <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -1139,8 +1143,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     <script>
         function openMemberModal(id, name, icon, generation, yokomoku, tatemoku) {
-            document.getElementById('modalIcon').src = '/assets/img/gacha_img/' + icon;
-            document.getElementById('modalIcon').alt = name;
+            const modalIconContainer = document.getElementById('modalIcon').parentElement;
+            
+            if (icon && icon.trim() !== '') {
+                // アイコン画像がある場合
+                modalIconContainer.innerHTML = '<img id="modalIcon" src="/assets/img/gacha_img/' + icon + '" alt="' + name + '" class="w-full h-full object-cover">';
+            } else {
+                // アイコン画像がない場合はデフォルトアイコン
+                modalIconContainer.innerHTML = '<div id="modalIcon" class="w-full h-full flex items-center justify-center bg-gray-200"><span class="text-6xl">👤</span></div>';
+            }
+            
             document.getElementById('modalName').textContent = name;
             document.getElementById('modalGeneration').textContent = generation + '期生';
             document.getElementById('modalYokomoku').textContent = yokomoku;
