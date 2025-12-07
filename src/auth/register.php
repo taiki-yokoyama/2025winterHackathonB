@@ -45,8 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['email'] = $email;
                 $_SESSION['coins'] = 0;
                 
-                // プランページにリダイレクト
-                header('Location: /plan/');
+                // マイページにリダイレクト
+                header('Location: /mypage/');
                 exit;
             }
         } catch (PDOException $e) {
