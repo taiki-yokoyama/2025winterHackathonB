@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['coins'] = $user['coins'];
                 
-                // プランページにリダイレクト
-                header('Location: /plan/');
+                // マイページにリダイレクト
+                header('Location: /mypage/');
                 exit;
             } else {
                 $error = 'メールアドレスまたはパスワードが正しくありません';
