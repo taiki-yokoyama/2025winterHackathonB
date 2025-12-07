@@ -42,8 +42,7 @@ if (empty($user['name'])) {
 
     <?php include '../components/header.php'; ?>
 
-    <div class="max-w-4xl mx-auto">
-
+    <div class="max-w-4xl mx-auto mt-12 md:mt-16">
 
         <!-- マイページ -->
         <section class="toy-box p-6 md:p-8 bg-white relative">
@@ -116,15 +115,9 @@ if (empty($user['name'])) {
             </div>
         </section>
         
-        <!-- ナビゲーション -->
-        <div class="mt-8 flex flex-wrap gap-4 justify-center">
-            <a href="/plan/" class="toy-box p-3 bg-[#FF69B4] font-bold hover:translate-y-1 transition">Plan</a>
-            <a href="/check/" class="toy-box p-3 bg-[#87CEEB] font-bold hover:translate-y-1 transition">Check</a>
-            <a href="/action/" class="toy-box p-3 bg-[#32CD32] font-bold hover:translate-y-1 transition">Action</a>
-            <a href="/gacha/" class="toy-box p-3 bg-[#FFD700] font-bold hover:translate-y-1 transition">Gacha</a>
-        </div>
-        
     </div>
+
+    <?php include '../components/footer.php'; ?>
 
 </body>
 </html>
