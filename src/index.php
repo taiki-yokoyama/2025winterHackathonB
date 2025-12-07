@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// 簡易的なデータ保持（DBの代わり）
+if (!isset($_SESSION['coins'])) $_SESSION['coins'] = 0;
+if (!isset($_SESSION['pdca_count'])) $_SESSION['pdca_count'] = 2;
+
+// 現在のページを取得 (デフォルトは plan)
+$page = isset($_GET['page']) ? $_GET['page'] : 'plan';
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>

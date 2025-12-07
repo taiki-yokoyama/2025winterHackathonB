@@ -1,9 +1,5 @@
 <?php
-// セッションが開始されていない場合は開始
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+// セッションは各ページで開始済みと想定
 $is_logged_in = isset($_SESSION['user_id']);
 ?>
 <header class="mb-8 mt-4">
