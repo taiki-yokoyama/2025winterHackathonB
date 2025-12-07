@@ -27,11 +27,21 @@ $actions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: linear-gradient(135deg, #FFB6C1 0%, #87CEEB 50%, #98FB98 100%);
+            min-height: 100vh;
+        }
         .toy-title { font-family: 'Bangers', cursive; letter-spacing: 2px; }
+        .font-heavy { font-family: 'Dela Gothic One', sans-serif; }
+        .toy-box { border: 6px solid #000; box-shadow: 12px 12px 0 #000; }
     </style>
 </head>
-<body class="bg-purple-50 min-h-screen p-8">
+<body class="p-4 md:p-8">
+
+<?php include '../components/header.php'; ?>
 
 <div class="bg-white rounded-xl shadow-sm p-6 mb-6 border-4 border-black" style="background: linear-gradient(135deg, #FF6B9D 0%, #FEC163 100%);">
     <div class="flex items-center space-x-3 mb-2">
